@@ -6,12 +6,17 @@ cmake_minimum_required (VERSION 3.19)
 # Add source to this project's executable.
 add_executable (2DGame)
 
-target_sources (2DGame PRIVATE "2DGame.cpp" "2DGame.h")
+target_sources (2DGame PRIVATE "2DGame.cpp" "2DGame.h" "EngineCore/Input.h" "EngineCore/Input.cpp")
 
 find_package(SDL2 REQUIRED)
 
 target_link_libraries(2DGame SDL2::Main)
 
+#Include subdirectories
+add_subdirectory ("EngineCore")
+add_subdirectory ("Game")
+
+#Move the SDL DLLs into position
 #TODO: expand for use with x86 and make it simpler for implementing other libraries (i.e. gfx/image)
 add_custom_command(
     TARGET 2DGame POST_BUILD 
