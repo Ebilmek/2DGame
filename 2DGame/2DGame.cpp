@@ -16,16 +16,19 @@ int main(int argc, char* argv[])
 {
 	std::unique_ptr<Game> game(new Game());
 	int hasError = 0;
+	float dt = 0.0f;
 
-	/*do
-	{
-		hasError = game->StartGame();
-	} while (!hasError);*/
-
+	// Set up
 	game->StartGame();
-	SDL_Delay(2000);
-	game->StopGame();
+
+	// Run game loop
+	do
+	{
+		hasError = game->RunGame(dt);
+	} while (!hasError);
 	
+	// Clean up and quit
+	game->StopGame();
 	SDL_Quit();
 	return 0;
 }

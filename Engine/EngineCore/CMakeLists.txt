@@ -1,0 +1,17 @@
+# CMakeList.txt : CMake project for 2DGame
+#
+cmake_minimum_required (VERSION 3.19)
+
+add_library(EngineCore STATIC)
+
+# Personal note: can put this inside add_library, but it's cleaner split
+target_sources (EngineCore PRIVATE "SHDebug.cpp" "SHDebug.h"
+    "Input.cpp" "Input.h"
+    "WindowSDL.cpp" "WindowSDL.h")
+
+# Personal note: having /.. after current source would 
+target_include_directories(EngineCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+find_package(SDL2)
+
+target_link_libraries(EngineCore PRIVATE SDL2::Core)

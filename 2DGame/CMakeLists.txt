@@ -4,16 +4,15 @@
 cmake_minimum_required (VERSION 3.19)
 
 # Add source to this project's executable.
-add_executable (2DGame)
+add_executable (2DGame WIN32)
 
-target_sources (2DGame PRIVATE "2DGame.cpp" "2DGame.h" "EngineCore/Input.h" "EngineCore/Input.cpp")
+target_sources (2DGame PRIVATE "2DGame.cpp" "2DGame.h")
 
 find_package(SDL2 REQUIRED)
 
-target_link_libraries(2DGame SDL2::Main)
+target_link_libraries(2DGame PRIVATE SDL2::Main EngineCore)
 
 #Include subdirectories
-add_subdirectory ("EngineCore")
 add_subdirectory ("Game")
 
 #Move the SDL DLLs into position
@@ -23,3 +22,6 @@ add_custom_command(
 #    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_PROPERTY:SDL2::Main,IMPORTED_LOCATION> $<TARGET_FILE_DIR:2DGame>
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_PATH}/lib/x64/SDL2.dll" $<TARGET_FILE_DIR:2DGame>
 )
+
+# Personal note: having /.. after current source would 
+target_include_directories(2DGame PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

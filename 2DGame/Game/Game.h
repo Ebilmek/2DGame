@@ -11,10 +11,8 @@ public:
 
 	bool StopGame();
 
-	bool RunGame();
+	bool RunGame(float dt);
 
 private:
-	//std::unique_ptr<WindowSDL> WindowPtr = std::make_unique<WindowSDL>(new WindowSDL());
 	std::unique_ptr<WindowSDL> WindowPtr;
-	//WindowSDL* WindowPtr = new WindowSDL();
 };

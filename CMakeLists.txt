@@ -10,6 +10,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 # Include sub-projects.
 add_subdirectory ("SDL2")
 add_subdirectory ("2DGame")
+add_subdirectory ("Engine")
 
 # Check if we have SDL2 MAIN
 #if(TARGET SDL2::Main) 
