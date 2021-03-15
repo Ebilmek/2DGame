@@ -1,6 +1,6 @@
 #pragma once
 #include "SDL.h"
-#include "../EngineCore/WindowSDL.h"
+#include "WindowSDL.h"
 
 class Game
 {

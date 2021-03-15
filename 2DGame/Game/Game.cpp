@@ -3,6 +3,7 @@
 #include <string>
 
 #include "SHDebug.h"
+#include "Input.h"
 
 Game::Game() : WindowPtr(new WindowSDL())
 {
@@ -26,9 +27,26 @@ bool Game::StopGame()
 bool Game::RunGame(float dt)
 {
 	SDL_Event event;
+	Input* inputHandler = nullptr;
+	inputHandler->getInstance();
 
 	while(SDL_PollEvent(&event))
 	{
+		if (event.type > SDL_KEYDOWN && event.type < SDL_MULTIGESTURE)
+		{
+			inputHandler->HandleEvents(event);
+			continue;
+		}
+
+		switch(event.type)
+		{
+		case SDL_QUIT:
+			StopGame();
+			return true;
+		
+		default:
+			break;
+		}
 	}
 	
 	// Exit clause
@@ -42,7 +60,7 @@ bool Game::RunGame(float dt)
 		{
 			const int test = SDL_GetScancodeFromKey(i);
 			SDL_Log("Key Pressed: %i", test);
-		}	
+		}
 	}
 	
 	

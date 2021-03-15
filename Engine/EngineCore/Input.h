@@ -1,4 +1,5 @@
 #pragma once
+#include "SDL_events.h"
 
 class Input
 {
@@ -11,18 +12,19 @@ public:
 		return instance;
 	}
 
-	Input(Input const&) = delete;
-	void operator=(Input const&) = delete;
-
 private:
 	Input() {}
 
 public:
+	Input(Input const&) = delete;
+	void operator=(Input const&) = delete;
 	// Rest of declarations ahead
 
-	void HandleEvents();
+	void HandleEvents(const SDL_Event& event);
 
 private:
+	/* Keyboard events*/
+	
 	// Current mouse location
 	float MouseX, MouseY;
 
