@@ -4,4 +4,4 @@
 cmake_minimum_required (VERSION 3.19)
 
 # FINDSDL2 sorts subfolders
-set(SDL2_PATH "${CMAKE_CURRENT_SOURCE_DIR}" CACHE STRING "Root folder for SDL2_image library" FORCE)
+set(SDL2_IMAGE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" CACHE STRING "Root folder for SDL2_image library" FORCE)

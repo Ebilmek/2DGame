@@ -27,13 +27,22 @@ int main(int argc, char* argv[])
 	do
 	{
 		pre_frame_time = SDL_GetTicks();
+
+		// Game Loop
 		isExiting = game->RunGame(dt);
+		if(!isExiting)
+		{
+			game->Render(dt);
+		}
+
+		// Timing
 		post_frame_time = SDL_GetTicks();
 		// Calculate dt and convert to seconds
 		dt =  (post_frame_time - pre_frame_time) / 1000.f;
 	} while (!isExiting);
 	
 	// Clean up and quit
+	game->StopGame();
 	SDL_Quit();
 	return 0;
 }

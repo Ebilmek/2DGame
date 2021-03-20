@@ -5,7 +5,7 @@
 #include "SHDebug.h"
 #include "Input.h"
 
-Game::Game() : WindowPtr(new WindowSDL())
+Game::Game() : WindowPtr(new WindowSDL()), position(0.0f)
 {
 	//WindowPtr = std::make_unique<WindowSDL>();
 }
@@ -19,8 +19,11 @@ bool Game::StartGame()
 
 bool Game::StopGame()
 {
-	WindowPtr->DeleteWindow();
-	WindowPtr = nullptr;
+	if (WindowPtr)
+	{
+		WindowPtr->DeleteWindow();
+		WindowPtr = nullptr;
+	}
 	return false;
 }
 
@@ -30,6 +33,7 @@ bool Game::RunGame(float dt)
 	Input* inputHandler = nullptr;
 	inputHandler->getInstance();
 
+	// Event loop
 	while(SDL_PollEvent(&event))
 	{
 		if (event.type > SDL_KEYDOWN && event.type < SDL_MULTIGESTURE)
@@ -67,5 +71,30 @@ bool Game::RunGame(float dt)
 	if (keyState[SDL_SCANCODE_ESCAPE])
 		return true;
 
+	return false;
+}
+
+bool Game::Render(float dt)
+{	
+	SDL_Renderer* shRenderer = WindowPtr->GetRenderer();
+
+	SDL_RenderClear(shRenderer);
+
+	if(sprite.texture == nullptr)
+		sprite.LoadTexture(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)", shRenderer);
+
+	SDL_SetRenderDrawColor(shRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+	SDL_Rect rect;
+	position += dt * 10.0f;
+	rect.w = rect.h = 64;
+	rect.x = rect.y = 100 + position;
+	SDL_RenderDrawRect(shRenderer, &rect);
+
+	if(sprite.texture != nullptr)
+		SDL_RenderCopy(shRenderer, sprite.texture, nullptr, nullptr);
+	
+	SDL_RenderPresent(shRenderer);
+	SDL_SetRenderDrawColor(shRenderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
+	
 	return false;
 }

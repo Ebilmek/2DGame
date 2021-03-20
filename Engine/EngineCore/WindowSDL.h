@@ -21,11 +21,14 @@ public:
 
 	bool DeleteWindow();
 
+	SDL_Renderer* GetRenderer();
+
 private:
 	//std::unique_ptr<SDL_Window> WindowPtr = nullptr;
 	//std::unique_ptr<SDL_Surface> ScreenSurfacePtr = nullptr;
 	SDL_Window* WindowPtr = nullptr;
 	SDL_Surface* ScreenSurfacePtr = nullptr;
+	SDL_Renderer* RendererPtr = nullptr;
 
 	uint16_t WindowWidth = 1024;
 	uint16_t WindowHeight = 768;

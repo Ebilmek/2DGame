@@ -1,6 +1,4 @@
 #include "WindowSDL.h"
-#include "WindowSDL.h"
-#include "WindowSDL.h"
 
 WindowSDL::WindowSDL()
 {
@@ -23,6 +21,7 @@ bool WindowSDL::CreateWindow(const int windowWidth, const int windowHeight)
 	if (WindowPtr != nullptr)
 	{
 		fprintf(stderr, "WindowPtr already initialised");
+		return false;
 	}
 	
 	WindowPtr = SDL_CreateWindow(
@@ -33,6 +32,10 @@ bool WindowSDL::CreateWindow(const int windowWidth, const int windowHeight)
 		windowHeight,
 		SDL_WINDOW_SHOWN
 	);
+
+	RendererPtr = SDL_CreateRenderer(WindowPtr, 
+		-1, 
+		SDL_RENDERER_ACCELERATED);
 	
 	if (WindowPtr == nullptr) 
 	{
@@ -70,4 +73,19 @@ bool WindowSDL::DeleteWindow()
 
 
 	return false;
+}
+
+SDL_Renderer* WindowSDL::GetRenderer()
+{
+	if(WindowPtr != nullptr)
+	{
+		if(RendererPtr != nullptr)
+		{
+			return RendererPtr;
+		}
+		fprintf(stderr, "Renderer not found: %s\n", SDL_GetError());
+		return nullptr;
+	}
+	fprintf(stderr, "Window not found: %s\n", SDL_GetError());
+	return nullptr;
 }
