@@ -15,9 +15,13 @@ File plan?
 	Sound???
 	Events
 	Debug
+	HandlerHandler? - Static holder, singleton that holds instances for objects with multiple uses
+		Texture Handler - unordered_map, holds texture and hash is created from texture file name. Image location is stored in here to reduce the issues with moving image folder
+			hash map to reduce multiple of the same texture being loaded
+		Input - I'm using this in multiple places. Mostly going to be a wrapper with some extra stuff (held buttons, possibly button chains?)
 /game
-	GameInstance
-	
+	GameInstance	
+
 	stored enum for current state?
 		MainMenu
 		Settings - edits .config? needs to be able to restart window?
@@ -38,3 +42,5 @@ File plan?
 		Boss
 	
 	Pathfinding algorithm (A*, easy to implement, just don't overuse it, look into asynchronous use?)
+
+	Images - subdirectory for all the images!

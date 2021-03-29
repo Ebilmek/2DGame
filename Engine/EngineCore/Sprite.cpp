@@ -26,7 +26,7 @@ void Sprite::LoadTexture(std::string inFilePath, SDL_Renderer* inRenderer)
 	const int outflags = IMG_Init(imgFlags);
 	if (outflags != imgFlags)
 	{
-		fprintf(stderr, "SDL_image not implemented");
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_image not implemented");
 		return;
 	}
 
@@ -36,14 +36,14 @@ void Sprite::LoadTexture(std::string inFilePath, SDL_Renderer* inRenderer)
 	SDL_Surface* loadedSurface = IMG_Load(inFilePath.c_str());
 	if (loadedSurface == nullptr)
 	{
-		// throw error
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Surface not created for image found at: %s", inFilePath.c_str());
 	}
 	else
 	{
 		texture = SDL_CreateTextureFromSurface(inRenderer, loadedSurface);
 		if (texture == nullptr)
 		{
-			// throw error
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to load image found at: %s", inFilePath.c_str());
 		}
 	}
 

@@ -21,7 +21,7 @@ public:
 
 	bool DeleteWindow();
 
-	SDL_Renderer* GetRenderer();
+	SDL_Renderer* GetRenderer() const;
 
 private:
 	//std::unique_ptr<SDL_Window> WindowPtr = nullptr;

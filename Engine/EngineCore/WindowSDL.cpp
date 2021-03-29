@@ -14,13 +14,13 @@ bool WindowSDL::CreateWindow(const int windowWidth, const int windowHeight)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) 
 	{
-		fprintf(stderr, "Could not initialize sdl2: %s\n", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Could not initialise sdl2 : %s", SDL_GetError());
 		return true;
 	}
 
 	if (WindowPtr != nullptr)
 	{
-		fprintf(stderr, "WindowPtr already initialised");
+		SDL_LogWarn(SDL_LOG_CATEGORY_SYSTEM, "WindowPtr already initialised, possibly called unnecessarily");
 		return false;
 	}
 	
@@ -33,13 +33,19 @@ bool WindowSDL::CreateWindow(const int windowWidth, const int windowHeight)
 		SDL_WINDOW_SHOWN
 	);
 
-	RendererPtr = SDL_CreateRenderer(WindowPtr, 
-		-1, 
-		SDL_RENDERER_ACCELERATED);
-	
 	if (WindowPtr == nullptr) 
 	{
-		fprintf(stderr, "Could not create window: %s\n", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Could not create window: %s", SDL_GetError());
+		return true;
+	}
+
+	RendererPtr = SDL_CreateRenderer(WindowPtr,
+		-1,
+		SDL_RENDERER_ACCELERATED);
+
+	if (RendererPtr == nullptr)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Could not create renderer: %s", SDL_GetError());
 		return true;
 	}
 
@@ -48,6 +54,11 @@ bool WindowSDL::CreateWindow(const int windowWidth, const int windowHeight)
 
 bool WindowSDL::RegenerateWindow(const int windowWidth, const int windowHeight)
 {
+	// @TODO: Handle errors and maybe carry this out in a better way
+	DeleteWindow();
+
+	CreateWindow(windowWidth, windowHeight);
+	
 	return false;
 }
 
@@ -55,7 +66,7 @@ bool WindowSDL::DisplayWindow()
 {
 	if (WindowPtr == nullptr)
 	{
-		fprintf(stderr, "Window was not initialised\n");
+		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Window was not initialised");
 		return true;
 	}
 
@@ -68,24 +79,35 @@ bool WindowSDL::DisplayWindow()
 
 bool WindowSDL::DeleteWindow()
 {
-	SDL_DestroyWindow(WindowPtr);
-	WindowPtr = nullptr;
+	if(ScreenSurfacePtr != nullptr)
+	{
+		SDL_FreeSurface(ScreenSurfacePtr);
+		ScreenSurfacePtr = nullptr;
+	}
 
+	if (RendererPtr != nullptr)
+	{
+		SDL_DestroyRenderer(RendererPtr);
+		RendererPtr = nullptr;
+	}
+	
+	if(WindowPtr != nullptr)
+	{
+		SDL_DestroyWindow(WindowPtr);
+		WindowPtr = nullptr;
+	}
 
 	return false;
 }
 
-SDL_Renderer* WindowSDL::GetRenderer()
+SDL_Renderer* WindowSDL::GetRenderer() const
 {
-	if(WindowPtr != nullptr)
+	if(RendererPtr != nullptr)
 	{
-		if(RendererPtr != nullptr)
-		{
-			return RendererPtr;
-		}
-		fprintf(stderr, "Renderer not found: %s\n", SDL_GetError());
-		return nullptr;
+		return RendererPtr;
 	}
-	fprintf(stderr, "Window not found: %s\n", SDL_GetError());
+	SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, 
+		"Renderer not found for screen: %i (-1 indicates error with window too)", 
+		SDL_GetWindowDisplayIndex(WindowPtr));
 	return nullptr;
 }

@@ -81,7 +81,7 @@ bool Game::Render(float dt)
 	SDL_RenderClear(shRenderer);
 
 	if(sprite.texture == nullptr)
-		sprite.LoadTexture(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)", shRenderer);
+		sprite.LoadTexture(R"(C:\Users\stefl\OneDrive\Pictures\gear.png)", shRenderer);
 
 	SDL_SetRenderDrawColor(shRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_Rect rect;
@@ -91,10 +91,10 @@ bool Game::Render(float dt)
 	SDL_RenderDrawRect(shRenderer, &rect);
 
 	if(sprite.texture != nullptr)
-		SDL_RenderCopy(shRenderer, sprite.texture, nullptr, nullptr);
+		SDL_RenderCopy(shRenderer, sprite.texture, nullptr, &rect);
 	
 	SDL_RenderPresent(shRenderer);
-	SDL_SetRenderDrawColor(shRenderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
+	SDL_SetRenderDrawColor(shRenderer, 0x00, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
 	
 	return false;
 }

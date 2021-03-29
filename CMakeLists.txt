@@ -13,10 +13,11 @@ add_subdirectory ("SDL2_image")
 add_subdirectory ("2DGame")
 add_subdirectory ("Engine")
 
-#[[ Check if we have SDL2 MAIN
-if(TARGET SDL2::Main) 
-    message(STATUS "SDL2 found")
-else()
-    message(STATUS "Hello, if you're seeing this: scream")
+option(USE_UNIT_TESTS "Build and run gtest unit testing" TRUE)
+if(USE_UNIT_TESTS)
+    enable_testing()
+    add_subdirectory("SH_Test")
+    add_subdirectory ("googletest")
+
+    set(BUILD_GMOCK FALSE CACHE BOOL "" FORCE)
 endif()
-]]
