@@ -11,7 +11,7 @@ target_sources (2DGame PRIVATE "2DGame.cpp" "2DGame.h")
 find_package(SDL2 REQUIRED)
 #find_package(SDL2_image REQUIRED)
 
-target_link_libraries(2DGame PRIVATE SDL2::Main EngineCore)
+target_link_libraries(2DGame PRIVATE SDL2::Main EngineCore EngineMath)
 
 #Include subdirectories
 add_subdirectory ("Game")

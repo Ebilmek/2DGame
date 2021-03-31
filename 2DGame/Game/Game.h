@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "Sprite.h"
 #include "WindowSDL.h"
+#include "Transform2D.h"
 
 class Game
 {
@@ -18,7 +19,8 @@ public:
 
 private:
 	std::unique_ptr<WindowSDL> WindowPtr;
-	float position;
 
+	Transform2D transform;
 	Sprite sprite;
+	float timeSinceStart;
 };

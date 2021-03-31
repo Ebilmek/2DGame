@@ -16,7 +16,7 @@ File plan?
 	Events
 	Debug
 	HandlerHandler? - Static holder, singleton that holds instances for objects with multiple uses
-		Texture Handler - unordered_map, holds texture and hash is created from texture file name. Image location is stored in here to reduce the issues with moving image folder
+		Texture Handler - unordered_map, holds texture and hash is created from texture file name. Image location is stored in here (SDL_GetBasePath()) to reduce the issues with moving image folder
 			hash map to reduce multiple of the same texture being loaded
 		Input - I'm using this in multiple places. Mostly going to be a wrapper with some extra stuff (held buttons, possibly button chains?)
 /game

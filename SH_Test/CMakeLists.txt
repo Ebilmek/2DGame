@@ -10,7 +10,7 @@ target_sources(2DGame_Test PRIVATE ${TestSrc})
 find_package(SDL2 REQUIRED)
 
 # Link gtest
-target_link_libraries(2DGame_Test PRIVATE gtest_main SDL2::Main EngineCore)
+target_link_libraries(2DGame_Test PRIVATE gtest_main SDL2::Main EngineCore EngineMath)
 
 #set(DG_CREATE_SHARED_LIBRARY ON)
 #set(DGTEST_LINKED_AS_SHARED_LIBRARY ON)

@@ -85,11 +85,12 @@ bool WindowSDL::DeleteWindow()
 		ScreenSurfacePtr = nullptr;
 	}
 
-	if (RendererPtr != nullptr)
+	// According to SDL no need to call this, it will be done automatically
+	/*if (RendererPtr != nullptr)
 	{
 		SDL_DestroyRenderer(RendererPtr);
 		RendererPtr = nullptr;
-	}
+	}*/
 	
 	if(WindowPtr != nullptr)
 	{

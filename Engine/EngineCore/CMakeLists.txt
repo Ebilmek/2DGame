@@ -1,4 +1,4 @@
-# CMakeList.txt : CMake project for 2DGame
+# CMakeList.txt : CMake project for Engine Core
 #
 cmake_minimum_required (VERSION 3.19)
 

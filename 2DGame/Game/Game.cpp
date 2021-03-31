@@ -1,11 +1,14 @@
 #include "Game.h"
 
 #include <string>
+#include <cmath>
 
 #include "SHDebug.h"
 #include "Input.h"
 
-Game::Game() : WindowPtr(new WindowSDL()), position(0.0f)
+Game::Game() : WindowPtr(new WindowSDL()),
+	transform(SDL_FRect({ 100.f, 100.f, 64.f, 64.f })),
+	timeSinceStart(0.0f)
 {
 	//WindowPtr = std::make_unique<WindowSDL>();
 }
@@ -81,17 +84,21 @@ bool Game::Render(float dt)
 	SDL_RenderClear(shRenderer);
 
 	if(sprite.texture == nullptr)
-		sprite.LoadTexture(R"(C:\Users\stefl\OneDrive\Pictures\gear.png)", shRenderer);
+		sprite.LoadTexture(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)", shRenderer);
 
 	SDL_SetRenderDrawColor(shRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-	SDL_Rect rect;
-	position += dt * 10.0f;
-	rect.w = rect.h = 64;
-	rect.x = rect.y = 100 + position;
-	SDL_RenderDrawRect(shRenderer, &rect);
-
+	
+	
+	timeSinceStart += dt;
+	const float translate = 64.0f * std::sinf(timeSinceStart);
+	transform.Translate(0.0f, 0.0f);
+	transform.SetSize(translate, 64.0f);
+	//transform.Rotate(dt * 60.0);
+	
+	SDL_RenderDrawRectF(shRenderer, &transform.GetRect());
+	
 	if(sprite.texture != nullptr)
-		SDL_RenderCopy(shRenderer, sprite.texture, nullptr, &rect);
+		SDL_RenderCopyExF(shRenderer, sprite.texture, nullptr, &transform.GetRect(), transform.GetRotation(), nullptr, transform.GetFlip());
 	
 	SDL_RenderPresent(shRenderer);
 	SDL_SetRenderDrawColor(shRenderer, 0x00, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
