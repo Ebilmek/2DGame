@@ -3,20 +3,32 @@
 #include <string>
 #include <cmath>
 
+#include "SDL_rect.h"
 #include "SHDebug.h"
 #include "Input.h"
 
 Game::Game() : WindowPtr(new WindowSDL()),
 	transform(SDL_FRect({ 100.f, 100.f, 64.f, 64.f })),
+	sprite1(std::make_shared<Renderable>(std::string(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)"))),
+	sprite2(std::make_shared<Renderable>(std::string(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)"))),
+	sprite3(std::make_shared<Renderable>(std::string(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)"))),
 	timeSinceStart(0.0f)
 {
 	//WindowPtr = std::make_unique<WindowSDL>();
+	sprite2->spriteInfo.transform.Translate(100.0f, 0.0f);
+	sprite3->spriteInfo.transform.Translate(200.0f, 0.0f);
 }
 
 bool Game::StartGame()
 {
 	WindowPtr->CreateWindow();
 	WindowPtr->DisplayWindow();
+
+	SDL_Renderer* shRenderer = WindowPtr->GetRenderer();
+	renderer.RegisterRenderable(sprite1, shRenderer);
+	renderer.RegisterRenderable(sprite2, shRenderer);
+	renderer.RegisterRenderable(sprite3, shRenderer);
+	
 	return false;
 }
 
@@ -83,22 +95,18 @@ bool Game::Render(float dt)
 
 	SDL_RenderClear(shRenderer);
 
-	if(sprite.texture == nullptr)
-		sprite.LoadTexture(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)", shRenderer);
-
 	SDL_SetRenderDrawColor(shRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-	
 	
 	timeSinceStart += dt;
 	const float translate = 64.0f * std::sinf(timeSinceStart);
 	transform.Translate(0.0f, 0.0f);
 	transform.SetSize(translate, 64.0f);
 	//transform.Rotate(dt * 60.0);
+	auto localRect = transform.GetLocationRect();
 	
-	SDL_RenderDrawRectF(shRenderer, &transform.GetRect());
-	
-	if(sprite.texture != nullptr)
-		SDL_RenderCopyExF(shRenderer, sprite.texture, nullptr, &transform.GetRect(), transform.GetRotation(), nullptr, transform.GetFlip());
+	SDL_RenderDrawRectF(shRenderer, &localRect);
+
+	renderer.CopyToBuffer(shRenderer);
 	
 	SDL_RenderPresent(shRenderer);
 	SDL_SetRenderDrawColor(shRenderer, 0x00, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);

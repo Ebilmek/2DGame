@@ -7,6 +7,7 @@
 */
 #include <stdio.h>
 #include <memory>
+#include <chrono>
 
 #include <SDL.h>
 
@@ -14,11 +15,9 @@
 
 int main(int argc, char* argv[]) 
 {
-	std::unique_ptr<Game> game(new Game());
+	std::unique_ptr<Game> game = std::make_unique<Game>();
 	int isExiting = 0;
 	float dt = 0;
-	Uint32 pre_frame_time = 0;
-	Uint32 post_frame_time = 0;
 
 	// Set up
 	game->StartGame();
@@ -26,7 +25,8 @@ int main(int argc, char* argv[])
 	// Run game loop
 	do
 	{
-		pre_frame_time = SDL_GetTicks();
+		// Uint32 preFrameTime = SDL_GetTicks();
+		std::chrono::steady_clock::time_point chronoPreTime = std::chrono::high_resolution_clock::now();
 
 		// Game Loop
 		isExiting = game->RunGame(dt);
@@ -36,9 +36,9 @@ int main(int argc, char* argv[])
 		}
 
 		// Timing
-		post_frame_time = SDL_GetTicks();
-		// Calculate dt and convert to seconds
-		dt =  (post_frame_time - pre_frame_time) / 1000.f;
+		// Calculate dt, in seconds (6 sig fig)
+		// dt = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::milliseconds(SDL_GetTicks() - preFrameTime)).count();
+		dt = std::chrono::duration<float, std::chrono::seconds::period>(std::chrono::high_resolution_clock::now() - chronoPreTime).count();
 	} while (!isExiting);
 	
 	// Clean up and quit

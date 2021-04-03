@@ -41,31 +41,31 @@ TEST_F(TransformRotationTest, NormalisationAntiClockwise2)
 
 TEST_F(TransformRotationTest, GetterSize)
 {
-	EXPECT_FLOAT_EQ(0.0f, testTransform.GetRect().w);
-	EXPECT_FLOAT_EQ(0.0f, testTransform.GetRect().h);
+	EXPECT_FLOAT_EQ(0.0f, testTransform.GetLocationRect().w);
+	EXPECT_FLOAT_EQ(0.0f, testTransform.GetLocationRect().h);
 }
 
 TEST_F(TransformRotationTest, SizeSet)
 {
 	testTransform.SetSize(50.0f, 75.0f);
-	EXPECT_FLOAT_EQ(50.0f, testTransform.GetRect().w);
-	EXPECT_FLOAT_EQ(75.0f, testTransform.GetRect().h);
+	EXPECT_FLOAT_EQ(50.0f, testTransform.GetLocationRect().w);
+	EXPECT_FLOAT_EQ(75.0f, testTransform.GetLocationRect().h);
 }
 
 TEST_F(TransformRotationTest, SizeMultiply)
 {
 	testTransform.SetSize(50.0f, 75.0f);
 	testTransform.MultiplySize(2.0f, 2.0f);
-	EXPECT_FLOAT_EQ(100.0f, testTransform.GetRect().w);
-	EXPECT_FLOAT_EQ(150.0f, testTransform.GetRect().h);
+	EXPECT_FLOAT_EQ(100.0f, testTransform.GetLocationRect().w);
+	EXPECT_FLOAT_EQ(150.0f, testTransform.GetLocationRect().h);
 }
 
 TEST_F(TransformRotationTest, SizeMultiplyNegativeHorizontal)
 {
 	testTransform.SetSize(50.0f, 75.0f);
 	testTransform.MultiplySize(-2.0f, 2.0f);
-	EXPECT_FLOAT_EQ(-100.0f, testTransform.GetRect().w);
-	EXPECT_FLOAT_EQ(150.0f, testTransform.GetRect().h);
+	EXPECT_FLOAT_EQ(-100.0f, testTransform.GetLocationRect().w);
+	EXPECT_FLOAT_EQ(150.0f, testTransform.GetLocationRect().h);
 
 	EXPECT_EQ(SDL_FLIP_HORIZONTAL, testTransform.GetFlip());
 }
@@ -74,8 +74,8 @@ TEST_F(TransformRotationTest, SizeMultiplyNegativeBoth)
 {
 	testTransform.SetSize(50.0f, 75.0f);
 	testTransform.MultiplySize(-2.0f, -2.0f);
-	EXPECT_FLOAT_EQ(-100.0f, testTransform.GetRect().w);
-	EXPECT_FLOAT_EQ(-150.0f, testTransform.GetRect().h);
+	EXPECT_FLOAT_EQ(-100.0f, testTransform.GetLocationRect().w);
+	EXPECT_FLOAT_EQ(-150.0f, testTransform.GetLocationRect().h);
 
 	EXPECT_EQ((SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL), testTransform.GetFlip());
 }

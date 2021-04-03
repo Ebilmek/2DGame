@@ -19,5 +19,6 @@ if(USE_UNIT_TESTS)
     add_subdirectory("SH_Test")
     add_subdirectory ("googletest")
 
+    # Don't build GMock
     set(BUILD_GMOCK FALSE CACHE BOOL "" FORCE)
 endif()

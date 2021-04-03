@@ -1,6 +1,6 @@
 #pragma once
-#include "SDL.h"
-#include "Sprite.h"
+#include "Renderable.h"
+#include "Renderer.h"
 #include "WindowSDL.h"
 #include "Transform2D.h"
 
@@ -20,7 +20,11 @@ public:
 private:
 	std::unique_ptr<WindowSDL> WindowPtr;
 
+	Renderer renderer;
+	
 	Transform2D transform;
-	Sprite sprite;
+	std::shared_ptr<Renderable> sprite1;
+	std::shared_ptr<Renderable> sprite2;
+	std::shared_ptr<Renderable> sprite3;
 	float timeSinceStart;
 };

@@ -33,7 +33,7 @@ public:
 	 *
 	 *	\return position and size SDL_FRect
 	 */
-	SDL_FRect GetRect() const { return posAndSize; }
+	SDL_FRect GetLocationRect() const { return posAndSize; }
 
 	/**
 	 *	\brief Increase or decrease size with a multiplier

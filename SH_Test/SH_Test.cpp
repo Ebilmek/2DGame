@@ -1,7 +1,6 @@
 // Tests!
 
 #include "gtest/gtest.h"
-#include "Sprite.h"
 
 TEST(SimpleTest, TrueOrFalse)
 {
