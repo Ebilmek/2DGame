@@ -4,32 +4,27 @@
 
 #include "SDL_log.h"
 
-Renderer::Renderer()
-{
-	
-}
-
-int Renderer::CopyToBuffer(SDL_Renderer* renderer)
+int Renderer::CopyToBuffer(SDL_Renderer& renderer)
 {
 	// Sort the elements by Z value
-	if (!isTextureInfoSortedByZ)
+	if (!is_texture_info_sorted_by_z_)
 	{
-		std::sort(renderables.begin(),
-			renderables.end()
+		std::sort(renderables_.begin(),
+			renderables_.end()
 			
 		);
-		isTextureInfoSortedByZ = true;
+		is_texture_info_sorted_by_z_ = true;
 	}
 
 	int success = 0;
-	for (const auto& spriteInfoPtr : renderables)
+	for(auto& spriteInfoPtr: renderables_)
 	{
-		SpriteInfo& info = spriteInfoPtr.lock()->spriteInfo;
+		const SpriteInfo& info = spriteInfoPtr.lock()->spriteInfo;
 		
-		success = SDL_RenderCopyExF(renderer,
-			textureHandler->GetTexture(info.imageName),
+		success = SDL_RenderCopyExF(&renderer,
+			texture_handler_->GetTexture(info.imageName),
 			info.srcRect,
-			&info.transform.GetLocationRect(),
+			info.transform.GetLocationRect(),
 			info.transform.GetRotation(),
 			info.centreOfRotation,
 			info.transform.GetFlip()
@@ -45,23 +40,16 @@ int Renderer::CopyToBuffer(SDL_Renderer* renderer)
 	return success;
 }
 
-bool Renderer::RegisterRenderable(const std::shared_ptr<Renderable>& renderable, SDL_Renderer* renderer)
+bool Renderer::RegisterRenderable(const Renderable& renderable, SDL_Renderer& renderer)
 {
-	// Check if null pointer, shouldn't be registering nothing
-	if(renderable == nullptr)
-	{
-		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Renderable passed in to RegisterRenderable was a nullptr");
-		return true;
-	}
-
 	// Send to the texture handler to load this texture
-	textureHandler->AddTexture(renderable->spriteInfo.imageName, renderer);
+	texture_handler_->AddTexture(renderable.spriteInfo.imageName, renderer);
 
 	// Add the renderable to our container
-	renderables.push_back(renderable);
+	renderables_.push_back(renderable.weak_from_this());
 
 	// Messed up the pool a little so sort it next time we render
-	isTextureInfoSortedByZ = false;
+	is_texture_info_sorted_by_z_ = false;
 
 	return false;
 }
@@ -74,14 +62,31 @@ bool Renderer::RemoveRenderable(const std::shared_ptr<Renderable>& renderable)
 		return true;
 	}
 
-	auto resultIt = std::find(renderables.begin(), renderables.end(), renderable);
-	if(resultIt !=  renderables.end())
+	auto resultIt = std::ranges::find(renderables_, renderable);
+	if(resultIt !=  renderables_.end())
 	{
-		textureHandler->RemoveTexture(renderable->spriteInfo.imageName);
-		renderables.erase(resultIt);
+		texture_handler_->RemoveTexture(renderable->spriteInfo.imageName);
+		renderables_.erase(resultIt);
 	}
 	else
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Renderable passed in to RemoveRenderable was not found in the container");
+		return true;
 	}
+
+	return false;
+}
+
+size_t Renderer::GetStoredTextureAmount() const
+{
+	if (texture_handler_ != nullptr)
+	{
+		return texture_handler_->GetTextureAmount();
+	}
+	return 0;
+}
+
+size_t Renderer::GetStoredTextureInfoAmount() const
+{
+	return renderables_.size();
 }

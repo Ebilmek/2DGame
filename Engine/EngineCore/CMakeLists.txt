@@ -3,6 +3,9 @@
 cmake_minimum_required (VERSION 3.19)
 
 add_library(EngineCore STATIC)
+#set_property(TARGET EngineCore PROPERTY CXX_STANDARD 20)
+# Only for this so doesn't affect other libraries or projects?
+target_compile_features(EngineCore PRIVATE cxx_std_20)
 
 # Personal note: can put this inside add_library, but it's cleaner split
 target_sources (EngineCore PRIVATE 

@@ -2,9 +2,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "SDL_render.h"
-
 #include "ImageContainer.h"
+#include "SDL_render.h"
 
 
 /*
@@ -23,18 +22,32 @@ public:
 	TextureHandler();
 
 	// Load texture if not present, otherwise add one to the ref count
-	void AddTexture(const std::string& name, SDL_Renderer* renderer);
+	void AddTexture(const std::string& name, SDL_Renderer& renderer);
 
 	// Remove one from the ref count, if 0 delete the texture.
 	void RemoveTexture(const std::string& name);
 
+	/**
+	 * \brief Get a pointer to the loaded texture within the container
+	 *
+	 * \param name Must be the shortened version of the filepath from executable to file. Full file path must not be included.
+	 */
 	SDL_Texture* GetTexture(const std::string& name);
 
+	/**
+	 * \brief Get the amount of buckets in the container (unique textures)
+	 *
+	 * \return Amount of unique textures
+	 */
+	size_t GetTextureAmount() const { return texture_pool_.size(); }
+
 private:
-	std::unordered_map<std::string, ImageContainer*> texturePool;
+	std::unordered_map<std::string, ImageContainer*> texture_pool_;
+
+	std::string file_path_;
 };
 
 inline SDL_Texture* TextureHandler::GetTexture(const std::string& name)
 {
-	return texturePool[name]->image;
+	return texture_pool_[name]->image;
 }

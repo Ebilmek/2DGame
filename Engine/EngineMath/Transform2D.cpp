@@ -2,28 +2,28 @@
 
 #include <cmath>
 
-Transform2D::Transform2D(SDL_FRect inPosAndSize, double inRotation, SDL_RendererFlip inFlip) :
-	posAndSize(inPosAndSize),
-	rotation(inRotation),
-	flip(inFlip)
+Transform2D::Transform2D(SDL_FRect in_pos_and_size, double in_rotation, SDL_RendererFlip in_flip) :
+	pos_and_size_(in_pos_and_size),
+	rotation_(in_rotation),
+	flip_(in_flip)
 {
 }
 
 void Transform2D::Translate(float x, float y)
 {
-	posAndSize.x += x;
-	posAndSize.y += y;
+	pos_and_size_.x += x;
+	pos_and_size_.y += y;
 }
 
-void Transform2D::MultiplySize(float multiplierX, float multiplierY)
+void Transform2D::MultiplySize(float multiplier_x, float multiplier_y)
 {
-	if(multiplierX > 0)
+	if(multiplier_x > 0)
 	{
-		posAndSize.w *= multiplierX;
+		pos_and_size_.w *= multiplier_x;
 	}
-	if(multiplierY > 0)
+	if(multiplier_y > 0)
 	{
-		posAndSize.h *= multiplierY;
+		pos_and_size_.h *= multiplier_y;
 	}
 }
 
@@ -40,9 +40,9 @@ void Transform2D::SetSize(float width, float height)
 		mirror = static_cast<SDL_RendererFlip>(mirror + SDL_FLIP_VERTICAL);
 	}
 	
-	posAndSize.w = std::abs(width);
-	posAndSize.h = std::abs(height);
-	flip = mirror;
+	pos_and_size_.w = std::abs(width);
+	pos_and_size_.h = std::abs(height);
+	flip_ = mirror;
 }
 
 void Transform2D::SetSizeNoFlip(float width, float height)
@@ -52,25 +52,25 @@ void Transform2D::SetSizeNoFlip(float width, float height)
 	if (height < 0)
 		height *= -1.0f;
 	
-	posAndSize.w = width;
-	posAndSize.h = height;
+	pos_and_size_.w = width;
+	pos_and_size_.h = height;
 }
 
-void Transform2D::Rotate(double inRotation)
+void Transform2D::Rotate(double in_rotation)
 {
-	rotation += inRotation;
+	rotation_ += in_rotation;
 	NormaliseRotation();
 }
 
-void Transform2D::SetRotation(double inRotation)
+void Transform2D::SetRotation(double in_rotation)
 {
-	rotation = inRotation;
+	rotation_ = in_rotation;
 	NormaliseRotation();
 }
 
 void Transform2D::NormaliseRotation()
 {
-	rotation = std::fmod(rotation, 360.0);
-	if (rotation < 0.0)
-		rotation += 360.0;
+	rotation_ = std::fmod(rotation_, 360.0);
+	if (rotation_ < 0.0)
+		rotation_ += 360.0;
 }

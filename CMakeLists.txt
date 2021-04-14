@@ -8,10 +8,17 @@ project ("2DGame" LANGUAGES CXX)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 
 # Include sub-projects.
+add_subdirectory ("Assets")
 add_subdirectory ("SDL2")
 add_subdirectory ("SDL2_image")
 add_subdirectory ("2DGame")
 add_subdirectory ("Engine")
+
+# Glob the assets
+file(GLOB asset_files "${CMAKE_CURRENT_SOURCE_DIR}/Assets/*" LIST_DIRECTORIES true )
+foreach(file_path ${asset_files})
+    message(${file_path})
+endforeach()
 
 option(USE_UNIT_TESTS "Build and run gtest unit testing" TRUE)
 if(USE_UNIT_TESTS)

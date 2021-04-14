@@ -7,13 +7,13 @@ class Sprite
 {
 public:
 	Sprite();
-	Sprite(std::string inFilePath, SDL_Renderer* inRenderer);
+	Sprite(std::string in_file_path, SDL_Renderer* in_renderer);
 	~Sprite();
 	
-	void LoadTexture(std::string inFilePath, SDL_Renderer* inRenderer);
+	void LoadTexture(std::string in_file_path, SDL_Renderer* in_renderer);
 	
 	SDL_Texture* texture;
 private:
-	std::string filePath;
+	std::string file_path_;
 	
 };

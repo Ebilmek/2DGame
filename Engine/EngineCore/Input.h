@@ -26,10 +26,10 @@ private:
 	/* Keyboard events*/
 	
 	// Current mouse location
-	float MouseX, MouseY;
+	float mouse_x_, mouse_y_;
 
 	// Mouse delta from last poll
-	float MouseDX, MouseDY;
+	float mouse_dx_, mouse_dy_;
 
 	// Keyboard presses bitwise new update and last frame for held?
 };

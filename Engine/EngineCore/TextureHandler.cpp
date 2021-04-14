@@ -1,8 +1,8 @@
 #include "TextureHandler.h"
 
-#include "SDL_image.h"
-
 #include <functional>
+
+#include "SDL_image.h"
 
 TextureHandler::TextureHandler()
 {
@@ -12,26 +12,50 @@ TextureHandler::TextureHandler()
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_image not implemented or IMG_Init failed");
 	}
+
+	const auto sdlPtr = SDL_GetBasePath();
+	if(sdlPtr == nullptr)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "File path could not be retrieved, %s", SDL_GetError());
+		SDL_assert(false);
+	}
+	
+	file_path_ = sdlPtr;
+	SDL_free(sdlPtr);
 }
 
-void TextureHandler::AddTexture(const std::string& name, SDL_Renderer* renderer)
+// renderer should never be null :(
+void TextureHandler::AddTexture(const std::string& name, SDL_Renderer& renderer)
 {
-	// Check if it's in the map
-	auto texture = texturePool.find(name);
-	if (texture != texturePool.end())
+	SDL_LogInfo(SDL_LOG_CATEGORY_RENDER, "Adding Texture with name: %s", name.c_str());
+	if (const auto textureIt = texture_pool_.find(name); textureIt != texture_pool_.end())
 	{
 		// Add one onto the ref count
-		++texture->second->refCount;
+		++textureIt->second->ref_count;
 	}
 	else
 	{
 		// Load and insert the texture
-		SDL_Surface* loadSurface = IMG_Load(name.c_str());
-		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, loadSurface);
-		// TODO: Check these above if null etc.
+		const std::string concatFileName = file_path_ + name;
+		SDL_LogInfo(SDL_LOG_CATEGORY_RENDER, "Completed file path: %s", concatFileName.c_str());
+		SDL_Surface* loadSurface = IMG_Load(concatFileName.c_str());
+		if (loadSurface == nullptr)
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Image not loaded correctly: %s", concatFileName.c_str());
+			SDL_Log("Error: %s", SDL_GetError());
+			return;
+		}
+		
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(&renderer, loadSurface);
+		if (texture == nullptr)
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Image not transferred correctly: %s", concatFileName.c_str());
+			SDL_Log("Error: %s", SDL_GetError());
+			return;
+		}
 
 		auto image = new ImageContainer(texture, 1);
-		texturePool.insert(std::pair<std::string, ImageContainer*>(name, image));
+		texture_pool_.insert(std::make_pair(name, image));
 		
 		// Free up surface;
 		SDL_FreeSurface(loadSurface);
@@ -42,15 +66,15 @@ void TextureHandler::AddTexture(const std::string& name, SDL_Renderer* renderer)
 void TextureHandler::RemoveTexture(const std::string& name)
 {
 	// Check if it's in the pool
-	auto texture = texturePool.find(name);
-	if (texture != texturePool.end())
+	auto texture = texture_pool_.find(name);
+	if (texture != texture_pool_.end())
 	{
 		// If ref count hits 0, remove the texture from the container
-		--texture->second->refCount;
+		--texture->second->ref_count;
 
-		if (texture->second->refCount <= 0)
+		if (texture->second->ref_count <= 0)
 		{
-			texturePool.erase(texture);
+			texture_pool_.erase(texture);
 		}
 	}
 	else

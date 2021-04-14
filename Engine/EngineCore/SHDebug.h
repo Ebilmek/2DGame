@@ -44,7 +44,7 @@ public:
 
 	// Log message
 	template<typename T, typename...Ts>
-	constexpr void LogMessage(int type, T head, Ts... tail);
+	constexpr void LogMessage(int channel, T head, Ts... tail);
 
 	// Log error
 	template<typename T, typename...Ts>

@@ -6,18 +6,30 @@
 #include "SDL_log.h"
 #include "SpriteInfo.h"
 
-class Renderable
+/*
+ * Built to be stored with a shared pointer to it
+ * Register with a 
+ */
+
+class Renderable: public std::enable_shared_from_this<Renderable>
 {
 public:
-	Renderable(SpriteInfo info) : spriteInfo(std::move(info)) {}
-	// Overload less than for sorting
+	explicit Renderable(SpriteInfo info) : spriteInfo(std::move(info)) {}
+
+	// Reduce shared pointer misuse
+	std::shared_ptr<Renderable> GetPtr()
+	{
+		return shared_from_this();
+	}
 	
+	// Overload less than for sorting
 	bool operator<(const Renderable& rhs) const { return spriteInfo.zValue < rhs.spriteInfo.zValue; }
 	
 	SpriteInfo spriteInfo;
 };
 
-inline bool operator==(const std::weak_ptr<Renderable>& a, const std::weak_ptr<Renderable>& b)
+// Weak pointer overload
+inline bool operator==(const std::weak_ptr<const Renderable>& a, const std::weak_ptr<const Renderable>& b)
 {
 	// Handle if one or both of the inputs are expired
 	if (a.expired() || b.expired())
@@ -44,7 +56,8 @@ inline bool operator==(const std::weak_ptr<Renderable>& a, const std::weak_ptr<R
 	return a.lock() == b.lock();
 }
 
-inline bool operator<(const std::weak_ptr<Renderable>& a, const std::weak_ptr<Renderable>& b)
+// Weak pointer overload
+inline bool operator<(const std::weak_ptr<const Renderable>& a, const std::weak_ptr<const Renderable>& b)
 {
 	// Handle if one or both of the inputs are expired
 	if(a.expired() || b.expired())

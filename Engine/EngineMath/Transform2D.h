@@ -14,11 +14,11 @@ class Transform2D
 {
 public:
 	/**
-	 *	\param inPosAndSize SDL_FRect containing position and size
-	 *	\param rotation Starting rotation in degrees
-	 *	\param flip Current mirrored direction, can use bitwise OR to flip in two directions
+	 *	\param in_pos_and_size SDL_FRect containing position and size
+	 *	\param in_rotation Starting rotation in degrees 
+	 *	\param in_flip Current mirrored direction, can use bitwise OR to flip in two directions
 	 */
-	Transform2D(SDL_FRect inPosAndSize, double inRotation = 0.0, SDL_RendererFlip inFlip = SDL_FLIP_NONE);
+	Transform2D(SDL_FRect in_pos_and_size, double in_rotation = 0.0, SDL_RendererFlip in_flip = SDL_FLIP_NONE);
 
 	/**
 	 *	\brief Move position by x and y amount
@@ -33,15 +33,15 @@ public:
 	 *
 	 *	\return position and size SDL_FRect
 	 */
-	SDL_FRect GetLocationRect() const { return posAndSize; }
+	const SDL_FRect* GetLocationRect() const { return &pos_and_size_; }
 
 	/**
 	 *	\brief Increase or decrease size with a multiplier
 	 *
-	 *	\param multiplierX Amount to multiply width with, set to -1 to ignore (<0)
-	 *	\param multiplierY Amount to multiply height with, set to -1 to ignore (<0)
+	 *	\param multiplier_x Amount to multiply width with, set to -1 to ignore (<0)
+	 *	\param multiplier_y Amount to multiply height with, set to -1 to ignore (<0)
 	 */
-	void MultiplySize(float multiplierX, float multiplierY);
+	void MultiplySize(float multiplier_x, float multiplier_y);
 
 	/**
 	 *	\brief Sets the size of the rect, will flip automatically
@@ -62,30 +62,30 @@ public:
 	/**
 	 *	\brief Rotate by set amount of degrees
 	 *
-	 *	\param inRotation in degrees
+	 *	\param in_rotation in degrees
 	 */
-	void Rotate(double inRotation);
+	void Rotate(double in_rotation);
 
 	/**
 		 *	\brief Rotate by set amount of degrees
 		 *
-		 *	\param inRotation in degrees
+		 *	\param in_rotation in degrees
 		 */
-	void SetRotation(double inRotation);
+	void SetRotation(double in_rotation);
 
 	/**
 	 *	\brief Getter for rotation 
 	 *
 	 *	\return double rotation
 	 */
-	double GetRotation() const { return rotation; }
+	double GetRotation() const { return rotation_; }
 
 	/**
 	 *	\brief Getter for flip
 	 *
 	 *	\return SDL_RendererFlip which axes it's mirrored on
 	 */
-	SDL_RendererFlip GetFlip() const { return flip; }
+	SDL_RendererFlip GetFlip() const { return flip_; }
 private:
 	/**
 	 *	\brief Ensures rotation is within 360 degrees
@@ -96,15 +96,15 @@ private:
 	/**
 	 *	\brief Uses SDL_FRect
 	 */
-	SDL_FRect posAndSize;
+	SDL_FRect pos_and_size_;
 	
 	/**
 	 *	\brief Current rotation, normalised to 0-360, degrees are used, rotation is clockwise
 	 */
-	double rotation;
+	double rotation_;
 	
 	/**
 	 *	\brief Uses SDL_RendererFlip
 	 */
-	SDL_RendererFlip flip;
+	SDL_RendererFlip flip_;
 };

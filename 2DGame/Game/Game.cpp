@@ -7,46 +7,45 @@
 #include "SHDebug.h"
 #include "Input.h"
 
-Game::Game() : WindowPtr(new WindowSDL()),
-	transform(SDL_FRect({ 100.f, 100.f, 64.f, 64.f })),
-	sprite1(std::make_shared<Renderable>(std::string(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)"))),
-	sprite2(std::make_shared<Renderable>(std::string(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)"))),
-	sprite3(std::make_shared<Renderable>(std::string(R"(C:\Users\stefl\OneDrive\Pictures\ball.jpg)"))),
-	timeSinceStart(0.0f)
+Game::Game() : window_ptr_(new WindowSDL()),
+	transform_(SDL_FRect({ 100.f, 100.f, 64.f, 64.f })),
+	sprite1_(std::make_shared<Renderable>(std::string(R"(Assets\Images\ball.jpg)"))),
+	sprite2_(std::make_shared<Renderable>(std::string(R"(Assets\Images\ball.jpg)"))), 
+	sprite3_(std::make_shared<Renderable>(std::string(R"(Assets\Images\gear.png)"))),
+	time_since_start_(0.0f)
 {
-	//WindowPtr = std::make_unique<WindowSDL>();
-	sprite2->spriteInfo.transform.Translate(100.0f, 0.0f);
-	sprite3->spriteInfo.transform.Translate(200.0f, 0.0f);
+	//windowPtr = std::make_unique<WindowSDL>();
+	sprite2_->spriteInfo.transform.Translate(150.0f, 0.0f);
+	sprite3_->spriteInfo.transform.Translate(300.0f, 0.0f);
 }
 
 bool Game::StartGame()
 {
-	WindowPtr->CreateWindow();
-	WindowPtr->DisplayWindow();
+	window_ptr_->CreateWindow();
+	window_ptr_->DisplayWindow();
 
-	SDL_Renderer* shRenderer = WindowPtr->GetRenderer();
-	renderer.RegisterRenderable(sprite1, shRenderer);
-	renderer.RegisterRenderable(sprite2, shRenderer);
-	renderer.RegisterRenderable(sprite3, shRenderer);
+	const auto shRenderer = window_ptr_->GetRenderer();
+	renderer_.RegisterRenderable(*sprite1_, *shRenderer);
+	renderer_.RegisterRenderable(*sprite2_, *shRenderer);
+	renderer_.RegisterRenderable(*sprite3_, *shRenderer);
 	
 	return false;
 }
 
 bool Game::StopGame()
 {
-	if (WindowPtr)
+	if (window_ptr_)
 	{
-		WindowPtr->DeleteWindow();
-		WindowPtr = nullptr;
+		window_ptr_->DeleteWindow();
+		window_ptr_ = nullptr;
 	}
 	return false;
 }
 
-bool Game::RunGame(float dt)
+bool Game::RunGame(const float dt)
 {
 	SDL_Event event;
-	Input* inputHandler = nullptr;
-	inputHandler->getInstance();
+	Input* inputHandler = &Input::getInstance();
 
 	// Event loop
 	while(SDL_PollEvent(&event))
@@ -89,24 +88,24 @@ bool Game::RunGame(float dt)
 	return false;
 }
 
-bool Game::Render(float dt)
+bool Game::Render(const float dt)
 {	
-	SDL_Renderer* shRenderer = WindowPtr->GetRenderer();
+	SDL_Renderer* shRenderer = window_ptr_->GetRenderer();
 
 	SDL_RenderClear(shRenderer);
 
 	SDL_SetRenderDrawColor(shRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 	
-	timeSinceStart += dt;
-	const float translate = 64.0f * std::sinf(timeSinceStart);
-	transform.Translate(0.0f, 0.0f);
-	transform.SetSize(translate, 64.0f);
+	time_since_start_ += dt;
+	const float translate = 64.0f * std::sinf(time_since_start_);
+	transform_.Translate(0.0f, 0.0f);
+	transform_.SetSize(translate, 64.0f);
 	//transform.Rotate(dt * 60.0);
-	auto localRect = transform.GetLocationRect();
+	const auto localRect = transform_.GetLocationRect();
 	
-	SDL_RenderDrawRectF(shRenderer, &localRect);
+	SDL_RenderDrawRectF(shRenderer, localRect);
 
-	renderer.CopyToBuffer(shRenderer);
+	renderer_.CopyToBuffer(*shRenderer);
 	
 	SDL_RenderPresent(shRenderer);
 	SDL_SetRenderDrawColor(shRenderer, 0x00, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);

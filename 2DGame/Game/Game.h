@@ -18,13 +18,13 @@ public:
 	bool Render(float dt);
 
 private:
-	std::unique_ptr<WindowSDL> WindowPtr;
+	std::unique_ptr<WindowSDL> window_ptr_;
 
-	Renderer renderer;
+	Renderer renderer_;
 	
-	Transform2D transform;
-	std::shared_ptr<Renderable> sprite1;
-	std::shared_ptr<Renderable> sprite2;
-	std::shared_ptr<Renderable> sprite3;
-	float timeSinceStart;
+	Transform2D transform_;
+	std::shared_ptr<Renderable> sprite1_;
+	std::shared_ptr<Renderable> sprite2_;
+	std::shared_ptr<Renderable> sprite3_;
+	float time_since_start_;
 };
