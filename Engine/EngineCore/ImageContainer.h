@@ -14,6 +14,11 @@ struct ImageContainer
 		  ref_count(ref_count)
 	{
 	}
+	~ImageContainer()
+	{
+		SDL_free(image);
+		image = nullptr;
+	}
 
 	SDL_Texture* image;
 	int ref_count;

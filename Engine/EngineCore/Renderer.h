@@ -12,15 +12,35 @@ public:
 	
 	/**
 	 *	\brief Copies the stored textures into the given renderer using the stored data
-	 *
 	 *	\returns SDL return from the copy if there is an error
 	 */
 	int CopyToBuffer(SDL_Renderer& renderer);
 
+	/**
+	 * \brief Tie the object to the renderable 
+	 * \param renderable Object that can be rendered
+	 * \param renderer The current window renderer
+	 * \return If the process failed
+	 */
 	bool RegisterRenderable(const Renderable& renderable, SDL_Renderer& renderer);
+	
+	/**
+	 * \brief Unlink the renderable and update the texture pool
+	 * \param renderable Renderable to unlink
+	 * \return If the process failed
+	 */
 	bool RemoveRenderable(const std::shared_ptr<Renderable>& renderable);
 
+	/**
+	 *	\brief Gets amount of textures stored
+	 *	\return Amount of textures stored by the texture handler (Can return 0 if texture handler was a nullptr)
+	 */
 	size_t GetStoredTextureAmount() const;
+	
+	/**
+	 *	\brief Gets the amount of information, does represent how many are being rendered to the screen each frame
+	 *	\return Amount of texture information stored
+	 */
 	size_t GetStoredTextureInfoAmount() const;
 private:
 	std::vector<std::weak_ptr<const Renderable>> renderables_;

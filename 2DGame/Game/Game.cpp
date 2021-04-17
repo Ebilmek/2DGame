@@ -28,6 +28,14 @@ bool Game::StartGame()
 	renderer_.RegisterRenderable(*sprite1_, *shRenderer);
 	renderer_.RegisterRenderable(*sprite2_, *shRenderer);
 	renderer_.RegisterRenderable(*sprite3_, *shRenderer);
+
+	// Initialise input
+	Input* inputHandler = &Input::GetInstance();
+	const auto windowSize = window_ptr_->GetWindowSize();
+	inputHandler->Initialise(windowSize.first, windowSize.second);
+	inputHandler = nullptr;
+
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 	
 	return false;
 }
@@ -45,9 +53,24 @@ bool Game::StopGame()
 bool Game::RunGame(const float dt)
 {
 	SDL_Event event;
-	Input* inputHandler = &Input::getInstance();
+	Input* inputHandler = &Input::GetInstance();
 
+	inputHandler->PreUpdate();
+
+	// Exit clause
+	// @TODO: replace with input variant	
+	int numkeys;
+	const Uint8* keyState = SDL_GetKeyboardState(&numkeys);
+	
+	if (keyState[SDL_SCANCODE_ESCAPE])
+	{
+		SDL_Event quit;
+		quit.type = SDL_QUIT;
+		SDL_PushEvent(&quit);
+	}
+	
 	// Event loop
+	// TODO: Could multi-thread this, each event type could have its own thread
 	while(SDL_PollEvent(&event))
 	{
 		if (event.type > SDL_KEYDOWN && event.type < SDL_MULTIGESTURE)
@@ -58,20 +81,18 @@ bool Game::RunGame(const float dt)
 
 		switch(event.type)
 		{
+		case SDL_WINDOWEVENT:
+			OnWindowEvent(event);
+			break;
 		case SDL_QUIT:
 			StopGame();
 			return true;
-		
 		default:
 			break;
 		}
 	}
-	
-	// Exit clause
-	// @TODO: replace with input variant	
-	int numkeys;
-	const Uint8* keyState = SDL_GetKeyboardState(&numkeys);
-	
+
+	// Output keypresses
 	for (int i = 0; i < numkeys; i++)
 	{
 		if (keyState[i])
@@ -80,10 +101,8 @@ bool Game::RunGame(const float dt)
 			SDL_Log("Key Pressed: %i", test);
 		}
 	}
-	
-	
-	if (keyState[SDL_SCANCODE_ESCAPE])
-		return true;
+
+	sprite2_->spriteInfo.transform.Translate(inputHandler->mouse_dx_, inputHandler->mouse_dy_);
 
 	return false;
 }
@@ -102,13 +121,32 @@ bool Game::Render(const float dt)
 	transform_.SetSize(translate, 64.0f);
 	//transform.Rotate(dt * 60.0);
 	const auto localRect = transform_.GetLocationRect();
+
+	Input* input = &Input::GetInstance();
+	
 	
 	SDL_RenderDrawRectF(shRenderer, localRect);
 
 	renderer_.CopyToBuffer(*shRenderer);
 	
 	SDL_RenderPresent(shRenderer);
-	SDL_SetRenderDrawColor(shRenderer, 0x00, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
+	SDL_SetRenderDrawColor(shRenderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
 	
 	return false;
+}
+
+void Game::OnWindowEvent(SDL_Event& event)
+{
+	Input* inputHandler = &Input::GetInstance();
+	
+	switch (event.type)
+	{
+	case SDL_WINDOWEVENT_FOCUS_GAINED:
+		// TODO: Ignore the movement that will be made on focus gain
+		break;
+	case SDL_WINDOWEVENT_FOCUS_LOST:
+		break;
+	default:
+		break;
+	}
 }

@@ -17,14 +17,22 @@ TextureHandler::TextureHandler()
 	if(sdlPtr == nullptr)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "File path could not be retrieved, %s", SDL_GetError());
-		SDL_assert(false);
+		SDL_assert(sdlPtr != nullptr);
 	}
 	
 	file_path_ = sdlPtr;
 	SDL_free(sdlPtr);
 }
 
-// renderer should never be null :(
+TextureHandler::~TextureHandler()
+{
+	// Make sure the pointers are deleted before cleanup
+	for(auto& texture : texture_pool_)
+	{
+		delete texture.second;
+	}
+}
+
 void TextureHandler::AddTexture(const std::string& name, SDL_Renderer& renderer)
 {
 	SDL_LogInfo(SDL_LOG_CATEGORY_RENDER, "Adding Texture with name: %s", name.c_str());
@@ -65,15 +73,15 @@ void TextureHandler::AddTexture(const std::string& name, SDL_Renderer& renderer)
 
 void TextureHandler::RemoveTexture(const std::string& name)
 {
-	// Check if it's in the pool
-	auto texture = texture_pool_.find(name);
-	if (texture != texture_pool_.end())
+	if (auto texture = texture_pool_.find(name); 
+		texture != texture_pool_.end())
 	{
 		// If ref count hits 0, remove the texture from the container
 		--texture->second->ref_count;
 
 		if (texture->second->ref_count <= 0)
 		{
+			delete texture->second;
 			texture_pool_.erase(texture);
 		}
 	}

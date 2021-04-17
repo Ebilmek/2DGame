@@ -17,7 +17,7 @@ public:
 	explicit Renderable(SpriteInfo info) : spriteInfo(std::move(info)) {}
 
 	// Reduce shared pointer misuse
-	std::shared_ptr<Renderable> GetPtr()
+	std::shared_ptr<Renderable> GetSharedPtr()
 	{
 		return shared_from_this();
 	}

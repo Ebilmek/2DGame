@@ -62,8 +62,8 @@ bool Renderer::RemoveRenderable(const std::shared_ptr<Renderable>& renderable)
 		return true;
 	}
 
-	auto resultIt = std::ranges::find(renderables_, renderable);
-	if(resultIt !=  renderables_.end())
+	if(const auto resultIt = std::ranges::find(renderables_, renderable); 
+		resultIt !=  renderables_.end())
 	{
 		texture_handler_->RemoveTexture(renderable->spriteInfo.imageName);
 		renderables_.erase(resultIt);

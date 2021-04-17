@@ -17,6 +17,8 @@ public:
 
 	bool Render(float dt);
 
+	void OnWindowEvent(SDL_Event& event);
+
 private:
 	std::unique_ptr<WindowSDL> window_ptr_;
 

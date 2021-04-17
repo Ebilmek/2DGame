@@ -20,6 +20,7 @@ class TextureHandler
 {
 public:
 	TextureHandler();
+	~TextureHandler();
 
 	// Load texture if not present, otherwise add one to the ref count
 	void AddTexture(const std::string& name, SDL_Renderer& renderer);
