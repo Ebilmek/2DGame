@@ -1,8 +1,10 @@
 #pragma once
 #include <unordered_map>
 
+#include "Font.h"
 #include "Renderable.h"
 #include "SDL_render.h"
+#include "TextRenderable.h"
 #include "TextureHandler.h"
 
 class Renderer
@@ -23,6 +25,8 @@ public:
 	 * \return If the process failed
 	 */
 	bool RegisterRenderable(const Renderable& renderable, SDL_Renderer& renderer);
+
+	bool RegisterRenderable(TextRenderable& renderable, SDL_Renderer& renderer, std::string text, Font* font);
 	
 	/**
 	 * \brief Unlink the renderable and update the texture pool

@@ -25,6 +25,8 @@ public:
 	// Load texture if not present, otherwise add one to the ref count
 	void AddTexture(const std::string& name, SDL_Renderer& renderer);
 
+	void AddText(const std::string& name, SDL_Texture& texture, SDL_Renderer& renderer);
+
 	// Remove one from the ref count, if 0 delete the texture.
 	void RemoveTexture(const std::string& name);
 

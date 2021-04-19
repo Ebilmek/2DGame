@@ -8,15 +8,16 @@
 #include "Input.h"
 
 Game::Game() : window_ptr_(new WindowSDL()),
-	transform_(SDL_FRect({ 100.f, 100.f, 64.f, 64.f })),
-	sprite1_(std::make_shared<Renderable>(std::string(R"(Assets\Images\ball.jpg)"))),
-	sprite2_(std::make_shared<Renderable>(std::string(R"(Assets\Images\ball.jpg)"))), 
-	sprite3_(std::make_shared<Renderable>(std::string(R"(Assets\Images\gear.png)"))),
-	time_since_start_(0.0f)
+               transform_(SDL_FRect({100.f, 100.f, 64.f, 64.f})),
+               sprite1_(std::make_shared<Renderable>(std::string(R"(Assets\Images\ball.jpg)"))),
+               sprite2_(std::make_shared<Renderable>(std::string(R"(Assets\Images\ball.jpg)"))),
+               sprite3_(std::make_shared<Renderable>(std::string(R"(Assets\Images\gear.png)"))),
+               time_since_start_(0.0f), font_(new Font(std::string(R"(Assets\Fonts\agane\Agane 55 (roman).ttf)"))),
+               text_(std::make_shared<TextRenderable>(SpriteInfo("")))
 {
 	//windowPtr = std::make_unique<WindowSDL>();
-	sprite2_->spriteInfo.transform.Translate(150.0f, 0.0f);
-	sprite3_->spriteInfo.transform.Translate(300.0f, 0.0f);
+	sprite2_->sprite_info.transform.Translate(150.0f, 0.0f);
+	sprite3_->sprite_info.transform.Translate(300.0f, 0.0f);
 }
 
 bool Game::StartGame()
@@ -28,6 +29,9 @@ bool Game::StartGame()
 	renderer_.RegisterRenderable(*sprite1_, *shRenderer);
 	renderer_.RegisterRenderable(*sprite2_, *shRenderer);
 	renderer_.RegisterRenderable(*sprite3_, *shRenderer);
+
+	text_->sprite_info.transform.Translate(100.0f, 500.0f);
+	renderer_.RegisterRenderable(*text_, *shRenderer, "Hi there!", font_);
 
 	// Initialise input
 	Input* inputHandler = &Input::GetInstance();
@@ -42,11 +46,15 @@ bool Game::StartGame()
 
 bool Game::StopGame()
 {
-	if (window_ptr_)
-	{
-		window_ptr_->DeleteWindow();
-		window_ptr_ = nullptr;
-	}
+	renderer_.RemoveRenderable(sprite1_);
+	renderer_.RemoveRenderable(sprite2_);
+	renderer_.RemoveRenderable(sprite3_);
+	renderer_.RemoveRenderable(text_);
+
+	// Shutdown input
+	Input* inputHandler = &Input::GetInstance();
+	inputHandler->ShutDown();
+	
 	return false;
 }
 
@@ -85,7 +93,6 @@ bool Game::RunGame(const float dt)
 			OnWindowEvent(event);
 			break;
 		case SDL_QUIT:
-			StopGame();
 			return true;
 		default:
 			break;
@@ -102,7 +109,7 @@ bool Game::RunGame(const float dt)
 		}
 	}
 
-	sprite2_->spriteInfo.transform.Translate(inputHandler->mouse_dx_, inputHandler->mouse_dy_);
+	sprite2_->sprite_info.transform.Translate(inputHandler->mouse_dx_, inputHandler->mouse_dy_);
 
 	return false;
 }

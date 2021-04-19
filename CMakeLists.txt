@@ -11,6 +11,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 add_subdirectory ("Assets")
 add_subdirectory ("SDL2")
 add_subdirectory ("SDL2_image")
+add_subdirectory ("SDL2_ttf")
 add_subdirectory ("2DGame")
 add_subdirectory ("Engine")
 

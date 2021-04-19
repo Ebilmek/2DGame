@@ -1,5 +1,10 @@
 #include "WindowSDL.h"
 
+WindowSDL::~WindowSDL()
+{
+	DeleteWindow();
+}
+
 bool WindowSDL::CreateWindow()
 {
 	return CreateWindow(window_width_, window_height_, window_name_);
@@ -7,7 +12,7 @@ bool WindowSDL::CreateWindow()
 
 bool WindowSDL::CreateWindow(const uint16_t window_width, const uint16_t window_height, const std::string& name)
 {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) 
+	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) 
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Could not initialise sdl2 : %s", SDL_GetError());
 		return true;
@@ -79,24 +84,16 @@ bool WindowSDL::DisplayWindow()
 
 bool WindowSDL::DeleteWindow()
 {
-	if(screen_surface_ptr_ != nullptr)
-	{
-		SDL_FreeSurface(screen_surface_ptr_);
-		screen_surface_ptr_ = nullptr;
-	}
-
-	// According to SDL no need to call this, it will be done automatically
-	/*if (RendererPtr != nullptr)
-	{
-		SDL_DestroyRenderer(RendererPtr);
-		RendererPtr = nullptr;
-	}*/
-	
 	if(window_ptr_ != nullptr)
 	{
 		SDL_DestroyWindow(window_ptr_);
 		window_ptr_ = nullptr;
+		// These are automatically cleaned up via destroy window
+		screen_surface_ptr_ = nullptr; 
+		renderer_ptr_ = nullptr;
 	}
+
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
 	return false;
 }

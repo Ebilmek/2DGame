@@ -1,10 +1,19 @@
 #include "Input.h"
 
+#include "SDL.h"
+
 void Input::Initialise(const uint16_t& window_width, const uint16_t& window_height)
 {
 	mouse_x_ = window_width / 2.0f;
 	mouse_y_ = window_height / 2.0f;
 	mouse_dx_ = mouse_dy_ = 0.0f;
+
+    SDL_InitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR);
+}
+
+void Input::ShutDown()
+{
+    SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR);
 }
 
 void Input::PreUpdate()

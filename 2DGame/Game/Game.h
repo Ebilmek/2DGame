@@ -29,4 +29,7 @@ private:
 	std::shared_ptr<Renderable> sprite2_;
 	std::shared_ptr<Renderable> sprite3_;
 	float time_since_start_;
+
+	Font* font_;
+	std::shared_ptr<TextRenderable> text_;
 };

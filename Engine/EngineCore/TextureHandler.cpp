@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 
 TextureHandler::TextureHandler()
 {
@@ -22,6 +23,15 @@ TextureHandler::TextureHandler()
 	
 	file_path_ = sdlPtr;
 	SDL_free(sdlPtr);
+
+	// True Text Format initialise
+	if(!TTF_WasInit())
+	{
+		if(TTF_Init())
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_ttf could not be initialised: %s", TTF_GetError());
+		}
+	}
 }
 
 TextureHandler::~TextureHandler()
@@ -31,6 +41,10 @@ TextureHandler::~TextureHandler()
 	{
 		delete texture.second;
 	}
+
+	// TODO: Make this multiple screen friendly, Quit these on application shutdown
+	IMG_Quit();
+	TTF_Quit();
 }
 
 void TextureHandler::AddTexture(const std::string& name, SDL_Renderer& renderer)
@@ -69,6 +83,12 @@ void TextureHandler::AddTexture(const std::string& name, SDL_Renderer& renderer)
 		SDL_FreeSurface(loadSurface);
 		loadSurface = nullptr;
 	}
+}
+
+void TextureHandler::AddText(const std::string& name, SDL_Texture& texture, SDL_Renderer& renderer)
+{
+	auto image = new ImageContainer(&texture, 1);
+	texture_pool_.insert(std::make_pair(name, image));
 }
 
 void TextureHandler::RemoveTexture(const std::string& name)

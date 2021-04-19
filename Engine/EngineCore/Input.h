@@ -30,6 +30,7 @@ public:
 	// Rest of declarations ahead
 
 	void Initialise(const uint16_t& window_width, const uint16_t& window_height);
+	void ShutDown();
 
 	void PreUpdate();
 	

@@ -7,6 +7,7 @@ class WindowSDL
 {
 public:
 	WindowSDL() = default;
+	~WindowSDL();
 
 	// Create a SDL window
 	bool CreateWindow();
@@ -19,8 +20,6 @@ public:
 
 	// Display window
 	bool DisplayWindow();
-
-	bool DeleteWindow();
 
 	//TODO: Expand on this, more robust
 	bool IsValid() const { return (window_ptr_ != nullptr && renderer_ptr_!= nullptr); }
@@ -48,4 +47,6 @@ private:
 	uint16_t window_width_ = 1024;
 	uint16_t window_height_ = 768;
 	std::string window_name_ = "2DGame";
+
+	bool DeleteWindow();
 };
