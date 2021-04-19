@@ -1,19 +1,14 @@
 #pragma once
 #include <string>
+
+#include "Renderable.h"
 #include "SDL.h"
 
 
-class Sprite
+class Sprite : public Renderable
 {
 public:
-	Sprite();
-	Sprite(std::string in_file_path, SDL_Renderer* in_renderer);
-	~Sprite();
-	
-	void LoadTexture(std::string in_file_path, SDL_Renderer* in_renderer);
-	
-	SDL_Texture* texture;
-private:
-	std::string file_path_;
-	
+	explicit Sprite(const SpriteInfo& info) : Renderable(info)
+	{
+	}
 };

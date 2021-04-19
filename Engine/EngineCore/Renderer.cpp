@@ -43,7 +43,7 @@ int Renderer::CopyToBuffer(SDL_Renderer& renderer)
 bool Renderer::RegisterRenderable(const Renderable& renderable, SDL_Renderer& renderer)
 {
 	// Send to the texture handler to load this texture
-	texture_handler_->AddTexture(renderable.sprite_info.imageName, renderer);
+	texture_handler_->LoadTexture(renderable.sprite_info.imageName, renderer);
 
 	// Add the renderable to our container
 	renderables_.push_back(renderable.weak_from_this());
@@ -61,9 +61,16 @@ bool Renderer::RegisterRenderable(TextRenderable& renderable, SDL_Renderer& rend
 	auto* surface = TTF_RenderText_Blended(font->GetFont(), text.c_str(), color);
 	auto* texture = SDL_CreateTextureFromSurface(&renderer, surface);
 
-	texture_handler_->AddText(text, *texture, renderer);
+	// Create a pseudo guid for the text (means that we could create the same text but prevents using the
+	// wrong image if we have different fonts for the same text)
+	static uint_fast32_t guidCount;
+
+	texture_handler_->AddTexture(text + std::to_string(guidCount), *texture);
 	
-	renderable.sprite_info.imageName = text;
+	renderable.sprite_info.imageName = text + std::to_string(guidCount);
+	guidCount++;
+
+	
 	int w, h;
 	TTF_SizeText(font->GetFont(), text.c_str(), &w, &h);
 	renderable.sprite_info.transform.SetSize(w, h);
@@ -72,13 +79,6 @@ bool Renderer::RegisterRenderable(TextRenderable& renderable, SDL_Renderer& rend
 	SDL_FreeSurface(surface);
 
 	is_texture_info_sorted_by_z_ = false;
-
-	// Create text with the given font
-
-	// On success create a unique ID with text and font
-	// Set spriteInfo file location to this?
-
-	// Add it into texture pool
 	
 	return false;
 }

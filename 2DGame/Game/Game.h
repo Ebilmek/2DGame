@@ -1,6 +1,6 @@
 #pragma once
-#include "Renderable.h"
 #include "Renderer.h"
+#include "Sprite.h"
 #include "WindowSDL.h"
 #include "Transform2D.h"
 
@@ -25,9 +25,9 @@ private:
 	Renderer renderer_;
 	
 	Transform2D transform_;
-	std::shared_ptr<Renderable> sprite1_;
-	std::shared_ptr<Renderable> sprite2_;
-	std::shared_ptr<Renderable> sprite3_;
+	std::shared_ptr<Sprite> sprite1_;
+	std::shared_ptr<Sprite> sprite2_;
+	std::shared_ptr<Sprite> sprite3_;
 	float time_since_start_;
 
 	Font* font_;

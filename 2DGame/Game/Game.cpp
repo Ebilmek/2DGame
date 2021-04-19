@@ -9,9 +9,9 @@
 
 Game::Game() : window_ptr_(new WindowSDL()),
                transform_(SDL_FRect({100.f, 100.f, 64.f, 64.f})),
-               sprite1_(std::make_shared<Renderable>(std::string(R"(Assets\Images\ball.jpg)"))),
-               sprite2_(std::make_shared<Renderable>(std::string(R"(Assets\Images\ball.jpg)"))),
-               sprite3_(std::make_shared<Renderable>(std::string(R"(Assets\Images\gear.png)"))),
+               sprite1_(std::make_shared<Sprite>(std::string(R"(Assets\Images\ball.jpg)"))),
+               sprite2_(std::make_shared<Sprite>(std::string(R"(Assets\Images\ball.jpg)"))),
+               sprite3_(std::make_shared<Sprite>(std::string(R"(Assets\Images\gear.png)"))),
                time_since_start_(0.0f), font_(new Font(std::string(R"(Assets\Fonts\agane\Agane 55 (roman).ttf)"))),
                text_(std::make_shared<TextRenderable>(SpriteInfo("")))
 {

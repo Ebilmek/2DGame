@@ -47,7 +47,7 @@ TextureHandler::~TextureHandler()
 	TTF_Quit();
 }
 
-void TextureHandler::AddTexture(const std::string& name, SDL_Renderer& renderer)
+void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& renderer)
 {
 	SDL_LogInfo(SDL_LOG_CATEGORY_RENDER, "Adding Texture with name: %s", name.c_str());
 	if (const auto textureIt = texture_pool_.find(name); textureIt != texture_pool_.end())
@@ -85,7 +85,7 @@ void TextureHandler::AddTexture(const std::string& name, SDL_Renderer& renderer)
 	}
 }
 
-void TextureHandler::AddText(const std::string& name, SDL_Texture& texture, SDL_Renderer& renderer)
+void TextureHandler::AddTexture(const std::string& name, SDL_Texture& texture)
 {
 	auto image = new ImageContainer(&texture, 1);
 	texture_pool_.insert(std::make_pair(name, image));

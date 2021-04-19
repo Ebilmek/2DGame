@@ -5,7 +5,7 @@
 class TextRenderable : public Renderable
 {
 public:
-	TextRenderable(const SpriteInfo& info) : Renderable(info)
+	explicit TextRenderable(const SpriteInfo& info) : Renderable(info)
 	{
 	}
 
@@ -13,5 +13,5 @@ public:
 
 	void UpdateText();
 private:
-	TTF_Font* font_;
+	TTF_Font* font_ptr_;
 };

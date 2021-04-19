@@ -19,6 +19,8 @@ int main(int argc, char* argv[])
 	int isExiting = 0;
 	float dt = 0;
 
+	SDL_Init(SDL_INIT_TIMER | SDL_INIT_EVENTS);
+
 	// Set up
 	game->StartGame();
 
