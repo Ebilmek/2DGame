@@ -66,11 +66,7 @@ bool Game::RunGame(const float dt)
 	inputHandler->PreUpdate();
 
 	// Exit clause
-	// @TODO: replace with input variant	
-	int numkeys;
-	const Uint8* keyState = SDL_GetKeyboardState(&numkeys);
-	
-	if (keyState[SDL_SCANCODE_ESCAPE])
+	if (inputHandler->IsKeyDown(SDL_SCANCODE_ESCAPE))
 	{
 		SDL_Event quit;
 		quit.type = SDL_QUIT;
@@ -100,16 +96,11 @@ bool Game::RunGame(const float dt)
 	}
 
 	// Output keypresses
-	for (int i = 0; i < numkeys; i++)
-	{
-		if (keyState[i])
-		{
-			const int test = SDL_GetScancodeFromKey(i);
-			SDL_Log("Key Pressed: %i", test);
-		}
-	}
+	inputHandler->OutputAllPressedKeys();
 
-	sprite2_->sprite_info.transform.Translate(inputHandler->mouse_dx_, inputHandler->mouse_dy_);
+	//const auto mouseMovement = inputHandler->GetMouseDelta();
+	const auto [mouseMovementX, mouseMovementY] = inputHandler->GetMouseDelta();
+	sprite2_->sprite_info.transform.Translate(mouseMovementX, mouseMovementY);
 
 	return false;
 }

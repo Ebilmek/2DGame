@@ -1,12 +1,14 @@
 #include "Input.h"
 
+#include <string>
+
 #include "SDL.h"
 
 void Input::Initialise(const uint16_t& window_width, const uint16_t& window_height)
 {
-	mouse_x_ = window_width / 2.0f;
-	mouse_y_ = window_height / 2.0f;
-	mouse_dx_ = mouse_dy_ = 0.0f;
+	mouse_position_.first = window_width / 2.0f;
+	mouse_position_.second = window_height / 2.0f;
+	mouse_delta_.first = mouse_delta_.second = 0.0f;
 
     SDL_InitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR);
 }
@@ -18,8 +20,12 @@ void Input::ShutDown()
 
 void Input::PreUpdate()
 {
-    mouse_dx_ = 0.0f;
-    mouse_dy_ = 0.0f;
+    mouse_delta_.first = 0.0f;
+    mouse_delta_.second = 0.0f;
+
+    erase_if(pressed_keys_, [](const auto& item) 
+        {auto const& [key, value] = item;
+    	return !value.down; });
 }
 
 void Input::HandleEvents(const SDL_Event& event)
@@ -28,17 +34,18 @@ void Input::HandleEvents(const SDL_Event& event)
 	switch(event.type)
 	{
 	/* Keyboard events */
-	case SDL_KEYDOWN:
-	case SDL_KEYUP:
+	case SDL_KEYDOWN:                   /**< Key pressed */
+	case SDL_KEYUP:                     /**< Key released */
         HandleKeyboardEvent(event);
         break;
-    case SDL_TEXTEDITING:
+    case SDL_TEXTEDITING:               /**< Keyboard text editing (composition) */
         HandleTextEditingEvent(event);
         break;
-    case SDL_TEXTINPUT:
+    case SDL_TEXTINPUT:                 /**< Keyboard text input */
         HandleTextInputEvent(event);
         break;
-    case SDL_KEYMAPCHANGED:
+    case SDL_KEYMAPCHANGED:             /**< Keymap changed due to a system event such as an
+										     input language or keyboard layout change. */
         break;
 
     /* Mouse events */
@@ -97,11 +104,17 @@ void Input::HandleKeyboardEvent(const SDL_Event& event)
         // Set up key press
         if(event.key.repeat == 0)
         {
-	        
+            ReducedKeySym currentKey;
+            currentKey.scan_code = event.key.keysym.scancode;
+        	currentKey.sym = SDL_GetKeyFromScancode(event.key.keysym.scancode);
+        	currentKey.mod = event.key.keysym.mod;
+            currentKey.down = true;
+            pressed_keys_.insert(std::make_pair(event.key.keysym.scancode, currentKey));
         }
         break;
     case SDL_KEYUP:
         // Reset
+        pressed_keys_[event.key.keysym.scancode].down = false;
         break;
     default:
         break;
@@ -122,10 +135,10 @@ void Input::HandleTextInputEvent(const SDL_Event& event)
 void Input::HandleMouseMotionEvent(const SDL_Event& event)
 {
 	// event.motion
-    mouse_x_ = event.motion.x;
-    mouse_y_ = event.motion.y;
-    mouse_dx_ += event.motion.xrel;
-    mouse_dy_ += event.motion.yrel;
+    mouse_position_.first = event.motion.x;
+    mouse_position_.second = event.motion.y;
+    mouse_delta_.first += event.motion.xrel;
+    mouse_delta_.second += event.motion.yrel;
 }
 
 void Input::HandleMouseButtonEvent(const SDL_Event& event)
@@ -136,4 +149,66 @@ void Input::HandleMouseButtonEvent(const SDL_Event& event)
 void Input::HandleMouseWheelEvent(const SDL_Event& event)
 {
 	// event.wheel
+}
+
+bool Input::IsKeyPressed(const uint8_t& key)
+{
+	// TODO: Change this so it only occurs once every time it's pressed
+    if (auto keysIt = pressed_keys_.find(static_cast<SDL_Scancode>(key));
+        keysIt != pressed_keys_.end())
+    {
+        return pressed_keys_[static_cast<SDL_Scancode>(key)].down == true;
+    }
+    return false;
+}
+
+bool Input::IsKeyReleased(const uint8_t& key)
+{
+	const auto scanCode = static_cast<SDL_Scancode>(key);
+	if (const auto keysIt = pressed_keys_.find(scanCode);
+        keysIt != pressed_keys_.end())
+    {
+        return pressed_keys_[scanCode].down == false;
+    }
+    return false;
+}
+
+bool Input::IsKeyDown(const uint8_t& key)
+{
+    int numkeys;
+
+    if(const Uint8 * keyState = SDL_GetKeyboardState(&numkeys); 
+        numkeys > 0 && keyState[key])
+	{
+        return true;
+	}
+    return false;
+}
+
+void Input::OutputAllPressedKeys()
+{
+    int numkeys;
+    const Uint8* keyState = SDL_GetKeyboardState(&numkeys);
+    std::string pressedKeys;
+    int numOfPressedKeys = 0;
+	
+    for (int i = 0; i < numkeys; i++)
+    {
+        if (keyState[i] && SDL_GetScancodeName(static_cast<SDL_Scancode>(i))) // Make sure we're not adding nothing
+        {
+            pressedKeys += SDL_GetScancodeName(static_cast<SDL_Scancode>(i));
+            pressedKeys += " ";
+            numOfPressedKeys++;
+        }
+    }
+	
+    if (numOfPressedKeys > 0)
+    {
+    	// Member variable to keep track of keys so that we're not spamming log
+    	if(pressedKeys != last_pressed_output_keys_)
+    	{
+            SDL_Log("Keys Pressed: %s", pressedKeys.c_str());
+            last_pressed_output_keys_ = pressedKeys;
+    	}
+    }
 }
