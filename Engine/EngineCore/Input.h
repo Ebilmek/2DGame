@@ -13,16 +13,6 @@
  *	Mouse stuff
  */
 
-// KeySym but without packer
-struct ReducedKeySym
-{
-	SDL_Scancode scan_code;
-	int sym;
-	Uint16 mod;
-	bool down;
-	bool hasBeenUsed;
-};
-
 class Input
 {
 public:
@@ -47,21 +37,60 @@ public:
 
 	// Call before event loop
 	void PreUpdate();
-	
-	void HandleEvents(const SDL_Event& event);
-	void HandleKeyboardEvent(const SDL_Event& event);
-	void HandleTextEditingEvent(const SDL_Event& event);
-	void HandleTextInputEvent(const SDL_Event& event);
-	void HandleMouseMotionEvent(const SDL_Event& event);
-	void HandleMouseButtonEvent(const SDL_Event& event);
-	void HandleMouseWheelEvent(const SDL_Event& event);
 
+	// Handle all SDL input events
+	void HandleEvents(const SDL_Event& event);
+	
+	/**
+	 * \brief Check if keyboard key is pressed, only true for one frame when pressed
+	 * \param key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
+	 * \sa SDL_Scancode
+	 * \return Whether keyboard key is pressed
+	 */
 	bool IsKeyPressed(const uint8_t& key);
 
+	/**
+	 * \brief Check if keyboard key is released, only true for one frame when released
+	 * \param key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
+	 * \sa SDL_Scancode
+	 * \return Whether keyboard key is pressed
+	 */
 	bool IsKeyReleased(const uint8_t& key);
 
+	/**
+	 * \brief Check if keyboard key is down, if using for one frame see IsKeyPressed 
+	 * \param key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
+	 * \sa SDL_Scancode
+	 * \return Whether keyboard key is pressed
+	 */
 	bool IsKeyDown(const uint8_t& key);
 
+	/**
+	 * \brief Check if mouse button is pressed, only true for one frame when pressed
+	 * \param mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
+	 * \return Whether mouse button is pressed
+	 */
+	bool IsMouseButtonPressed(const int& mouse_button);
+
+	/**
+	 * \brief Check if mouse button is released, only true for one frame when released
+	 * \param mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
+	 * \return Whether mouse button is released
+	 */
+	bool IsMouseButtonReleased(const int& mouse_button);
+
+	/**
+	 * \brief Check if mouse button is down, if using for one frame see IsMouseButtonPressed
+	 * \param mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
+	 * \return Whether mouse button is down
+	 */
+	bool IsMouseButtonDown(const int& mouse_button);
+
+	
+	/**
+	 * \brief Outputs all currently pressed keys through SDL_Log.
+	 * Reduced spam by only outputting when there are changes.
+	 */
 	void OutputAllPressedKeys();
 
 	[[nodiscard]] std::pair<int, int> GetMousePosition() const { return mouse_position_; }
@@ -69,14 +98,45 @@ public:
 	/* Keyboard events*/
 
 private:
+	// Individual event handlers
+	void HandleKeyboardEvent(const SDL_Event& event);
+	void HandleTextEditingEvent(const SDL_Event& event);
+	void HandleTextInputEvent(const SDL_Event& event);
+	void HandleMouseMotionEvent(const SDL_Event& event);
+	void HandleMouseButtonEvent(const SDL_Event& event);
+	void HandleMouseWheelEvent(const SDL_Event& event);
+
+	// Check whether mouse_button is valid, if it's in range of the defines within SDL_Mouse
+	bool IsInMouseButtonRange(const int& mouse_button);
+
 	// Current mouse location (first: x, second: y)
 	std::pair<int, int> mouse_position_;
-	
+
 	// Mouse delta from last poll (first: x, second: y)
 	std::pair<int, int> mouse_delta_;
+
+	struct MouseButton
+	{
+		bool is_pressed;
+		bool is_press_used;
+	};
+	
+	std::unordered_map<int, MouseButton> pressed_buttons_;
+
+	/** \brief KeySym but without packer and the scan code (now used as a key in a map)
+	 *	\sa SDL_keyboard.h KeySym
+	 */
+	struct ReducedKeySym
+	{
+		int sym;
+		Uint16 mod;
+		bool down;
+		bool hasBeenUsed;
+	};
 
 	// Keyboard presses bitwise new update and last frame for held?
 	std::unordered_map<SDL_Scancode, ReducedKeySym> pressed_keys_;
 
+	// Previous frames output log's keys, reduce spam by cutting out repeated prints
 	std::string last_pressed_output_keys_;
 };

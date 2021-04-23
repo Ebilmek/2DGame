@@ -9,9 +9,10 @@ file(GLOB TestSrc ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 target_sources(2DGame_Test PRIVATE ${TestSrc})
 
 find_package(SDL2 REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
 # Link gtest
-target_link_libraries(2DGame_Test PRIVATE gtest_main SDL2::Main EngineCore EngineMath)
+target_link_libraries(2DGame_Test PRIVATE gtest_main SDL2::Main SDL2::TTF EngineCore EngineMath)
 
 # Personal note: Looks at size of a pointer on current system
 # Looked into other means of doing this but most have been deprecated
@@ -45,6 +46,25 @@ foreach(CurrentDLL IN LISTS IMAGE_DLLS)
         VERBATIM
     )
 endforeach()
+
+# SDL_ttf
+# Loops through the missing DLLs and moves each one that's missing from destination .exe folder
+file(GLOB IMAGE_DLLS ${SDL2_TTF_PATH}/lib/${Processor}/*.dll)
+foreach(CurrentDLL IN LISTS IMAGE_DLLS)
+    add_custom_command(
+        TARGET 2DGame_Test POST_BUILD 
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CurrentDLL} $<TARGET_FILE_DIR:2DGame_Test>
+        COMMENT "Copying TTF DLL: ${CurrentDLL}"
+        VERBATIM
+    )
+endforeach()
+
+# Assets
+add_custom_command(
+    TARGET 2DGame_Test POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/copy-assets.cmake
+    COMMENT "Copying Assets"
+)
 
 #set(DG_CREATE_SHARED_LIBRARY ON)
 #set(DGTEST_LINKED_AS_SHARED_LIBRARY ON)

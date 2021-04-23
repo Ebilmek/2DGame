@@ -99,6 +99,15 @@ bool Game::RunGame(const float dt)
 	// Output keypresses
 	inputHandler->OutputAllPressedKeys();
 
+	if(inputHandler->IsMouseButtonPressed(SDL_BUTTON_LEFT))
+	{
+		sprite1_->sprite_info.transform.Translate(0.0f, 100.f);
+	}
+	if (inputHandler->IsMouseButtonPressed(SDL_BUTTON_RIGHT))
+	{
+		sprite1_->sprite_info.transform.Translate(0.0f, -100.f);
+	}
+
 	//const auto mouseMovement = inputHandler->GetMouseDelta();
 	const auto [mouseMovementX, mouseMovementY] = inputHandler->GetMouseDelta();
 	sprite2_->sprite_info.transform.Translate(mouseMovementX, mouseMovementY);

@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "Range.h"
 #include "SDL.h"
 
 void Input::Initialise(const uint16_t& window_width, const uint16_t& window_height)
@@ -23,10 +24,12 @@ void Input::PreUpdate()
     mouse_delta_.first = 0.0f;
     mouse_delta_.second = 0.0f;
 
+	// Remove if released greater than one frame
     erase_if(pressed_keys_, [](const auto& item) 
         {auto const& [key, value] = item;
     	return !value.down; });
 
+	// Set a variable to say the press is more than one frame old
 	for(auto& value : pressed_keys_)
 	{
 		if(value.second.down)
@@ -34,6 +37,19 @@ void Input::PreUpdate()
             value.second.hasBeenUsed = true;
 		}
 	}
+
+    erase_if(pressed_buttons_, [](const auto& item)
+        {auto const& [key, value] = item;
+		return !value.is_pressed; });
+
+    // Set a variable to say the press is more than one frame old
+    for (auto& value : pressed_buttons_)
+    {
+        if (value.second.is_pressed)
+        {
+            value.second.is_press_used = true;
+        }
+    }
 }
 
 void Input::HandleEvents(const SDL_Event& event)
@@ -103,68 +119,10 @@ void Input::HandleEvents(const SDL_Event& event)
 	}
 }
 
-void Input::HandleKeyboardEvent(const SDL_Event& event)
-{
-    // event.key
-    switch (event.key.type)
-    {
-	case SDL_KEYDOWN:
-        // Set up key press
-        if(event.key.repeat == 0)
-        {
-            ReducedKeySym currentKey;
-            currentKey.scan_code = event.key.keysym.scancode;
-        	currentKey.sym = SDL_GetKeyFromScancode(event.key.keysym.scancode);
-        	currentKey.mod = event.key.keysym.mod;
-            currentKey.down = true;
-            currentKey.hasBeenUsed = false;
-            pressed_keys_.insert(std::make_pair(event.key.keysym.scancode, currentKey));
-        }
-        break;
-    case SDL_KEYUP:
-        // Reset
-        pressed_keys_[event.key.keysym.scancode].down = false;
-        break;
-    default:
-        break;
-    }
-	
-}
-
-void Input::HandleTextEditingEvent(const SDL_Event& event)
-{
-	// event.edit
-}
-
-void Input::HandleTextInputEvent(const SDL_Event& event)
-{
-	// event.text
-}
-
-void Input::HandleMouseMotionEvent(const SDL_Event& event)
-{
-	// event.motion
-    mouse_position_.first = event.motion.x;
-    mouse_position_.second = event.motion.y;
-    mouse_delta_.first += event.motion.xrel;
-    mouse_delta_.second += event.motion.yrel;
-}
-
-void Input::HandleMouseButtonEvent(const SDL_Event& event)
-{
-	// event.button
-    // TODO: Flesh out this one
-}
-
-void Input::HandleMouseWheelEvent(const SDL_Event& event)
-{
-	// event.wheel
-}
-
 bool Input::IsKeyPressed(const uint8_t& key)
 {
 	// TODO: Change this so it only occurs once every time it's pressed
-    if (auto keysIt = pressed_keys_.find(static_cast<SDL_Scancode>(key));
+    if (const auto& keysIt = pressed_keys_.find(static_cast<SDL_Scancode>(key));
         keysIt != pressed_keys_.end())
     {
         return pressed_keys_[static_cast<SDL_Scancode>(key)].hasBeenUsed == false && pressed_keys_[static_cast<SDL_Scancode>(key)].down == true;
@@ -175,7 +133,7 @@ bool Input::IsKeyPressed(const uint8_t& key)
 bool Input::IsKeyReleased(const uint8_t& key)
 {
 	const auto scanCode = static_cast<SDL_Scancode>(key);
-	if (const auto keysIt = pressed_keys_.find(scanCode);
+	if (const auto& keysIt = pressed_keys_.find(scanCode);
         keysIt != pressed_keys_.end())
     {
         return pressed_keys_[scanCode].down == false;
@@ -192,6 +150,45 @@ bool Input::IsKeyDown(const uint8_t& key)
 	{
         return true;
 	}
+    return false;
+}
+
+bool Input::IsMouseButtonPressed(const int& mouse_button)
+{
+	if(IsInMouseButtonRange(mouse_button))
+	{
+        if (const auto& buttonIt = pressed_buttons_.find(mouse_button);
+            buttonIt != pressed_buttons_.end())
+        {
+            return buttonIt->second.is_pressed && !buttonIt->second.is_press_used;
+        }
+	}
+    return false;
+}
+
+bool Input::IsMouseButtonReleased(const int& mouse_button)
+{
+    if (IsInMouseButtonRange(mouse_button))
+    {
+	    if (const auto& buttonIt = pressed_buttons_.find(mouse_button);
+            buttonIt != pressed_buttons_.end())
+        {
+            return !buttonIt->second.is_pressed;
+        }
+    }
+    return false;
+}
+
+bool Input::IsMouseButtonDown(const int& mouse_button)
+{
+    if (IsInMouseButtonRange(mouse_button))
+    {
+	    if(const auto& buttonIt = pressed_buttons_.find(mouse_button); 
+            buttonIt != pressed_buttons_.end())
+    	{
+            return buttonIt->second.is_pressed;
+    	}
+    }
     return false;
 }
 
@@ -221,4 +218,96 @@ void Input::OutputAllPressedKeys()
             last_pressed_output_keys_ = pressedKeys;
     	}
     }
+}
+
+void Input::HandleKeyboardEvent(const SDL_Event& event)
+{
+    // event.key
+    switch (event.key.type)
+    {
+    case SDL_KEYDOWN:
+        // Set up key press
+        if (event.key.repeat == 0)
+        {
+            ReducedKeySym currentKey;
+            currentKey.sym = SDL_GetKeyFromScancode(event.key.keysym.scancode);
+            currentKey.mod = event.key.keysym.mod;
+            currentKey.down = true;
+            currentKey.hasBeenUsed = false;
+            pressed_keys_.insert(std::make_pair(event.key.keysym.scancode, currentKey));
+        }
+        break;
+    case SDL_KEYUP:
+        // Reset
+        pressed_keys_[event.key.keysym.scancode].down = false;
+        break;
+    default:
+        break;
+    }
+
+}
+
+void Input::HandleTextEditingEvent(const SDL_Event& event)
+{
+    // event.edit
+}
+
+void Input::HandleTextInputEvent(const SDL_Event& event)
+{
+    // event.text
+}
+
+void Input::HandleMouseMotionEvent(const SDL_Event& event)
+{
+    // event.motion
+    mouse_position_.first = event.motion.x;
+    mouse_position_.second = event.motion.y;
+    mouse_delta_.first += event.motion.xrel;
+    mouse_delta_.second += event.motion.yrel;
+}
+
+void Input::HandleMouseButtonEvent(const SDL_Event& event)
+{
+    // event.button
+    // TODO: Flesh out this one
+	switch (event.button.type)
+	{
+	case SDL_MOUSEBUTTONDOWN:
+        MouseButton mouseButton;
+        mouseButton.is_press_used = false;
+        mouseButton.is_pressed = true;
+        pressed_buttons_.insert(std::make_pair(event.button.button, mouseButton));
+        break;
+	case SDL_MOUSEBUTTONUP:
+	{ // Note for self: scoped for iterator declaration
+        const auto buttonIt = pressed_buttons_.find(event.button.button);
+        if (buttonIt != pressed_buttons_.end())
+        {
+            buttonIt->second.is_pressed = false;
+        }
+        else
+        {
+            SDL_LogWarn(SDL_LOG_CATEGORY_INPUT, "Got a release of a mouse button that wasn't stored as pressed");
+        }
+	}
+        break;
+    default:
+        SDL_LogError(SDL_LOG_CATEGORY_INPUT, "Somehow got a default on MouseButtonEvent, unknown case");
+        break;
+	}
+}
+
+void Input::HandleMouseWheelEvent(const SDL_Event& event)
+{
+    // event.wheel
+}
+
+bool Input::IsInMouseButtonRange(const int& mouse_button)
+{
+    if (SHMath::InRange(SDL_BUTTON_LEFT, SDL_BUTTON_X2, mouse_button))
+    {
+        return true;
+    }
+    SDL_LogWarn(SDL_LOG_CATEGORY_INPUT, "Mouse button out of range");
+    return false;
 }

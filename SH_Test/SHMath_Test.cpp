@@ -1,8 +1,10 @@
 /*
  * Testing Engine Math... math?
  */
+#include "Range.h"
 #include "gtest/gtest.h"
 #include "Transform2D.h"
+//#include "Range.h"
 
 class Transform2DTest : public testing::Test
 {
@@ -86,4 +88,18 @@ TEST_F(Transform2DTest, ResizeNegativeTest)
 	EXPECT_FLOAT_EQ(1500.0f, test_transform_.GetLocationRect()->h);
 
 	EXPECT_EQ(SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL, test_transform_.GetFlip());
+}
+
+TEST(RangeTest, RangeTest)
+{
+	EXPECT_TRUE(SHMath::InRange(0, 10, 5));
+	EXPECT_FALSE(SHMath::InRange(0, 10, 11));
+}
+
+TEST(RangeTest, NegativeRangeTest)
+{
+	EXPECT_TRUE(SHMath::InRange(-10, 10, 5));
+	EXPECT_TRUE(SHMath::InRange(-10, 10, -10));
+	EXPECT_TRUE(SHMath::InRange(-10, -9, -9));
+	EXPECT_FALSE(SHMath::InRange(-10, -8, -11));
 }
