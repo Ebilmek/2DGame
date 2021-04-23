@@ -31,6 +31,7 @@ bool Game::StartGame()
 	renderer_.RegisterRenderable(*sprite3_, *shRenderer);
 
 	text_->sprite_info.transform.Translate(100.0f, 500.0f);
+	text_->sprite_info.zValue = 100.0f;
 	renderer_.RegisterRenderable(*text_, *shRenderer, "Hi there!", font_);
 
 	// Initialise input

@@ -87,7 +87,7 @@ void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& renderer
 
 void TextureHandler::AddTexture(const std::string& name, SDL_Texture& texture)
 {
-	auto image = new ImageContainer(&texture, 1);
+	auto* image = new ImageContainer(&texture, 1);
 	texture_pool_.insert(std::make_pair(name, image));
 }
 

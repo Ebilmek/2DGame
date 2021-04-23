@@ -20,6 +20,7 @@ struct ReducedKeySym
 	int sym;
 	Uint16 mod;
 	bool down;
+	bool hasBeenUsed;
 };
 
 class Input
@@ -44,6 +45,7 @@ public:
 	void Initialise(const uint16_t& window_width, const uint16_t& window_height);
 	void ShutDown();
 
+	// Call before event loop
 	void PreUpdate();
 	
 	void HandleEvents(const SDL_Event& event);

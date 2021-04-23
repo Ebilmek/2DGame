@@ -6,8 +6,8 @@
 
 void Input::Initialise(const uint16_t& window_width, const uint16_t& window_height)
 {
-	mouse_position_.first = window_width / 2.0f;
-	mouse_position_.second = window_height / 2.0f;
+	mouse_position_.first = window_width / 2;
+	mouse_position_.second = window_height / 2;
 	mouse_delta_.first = mouse_delta_.second = 0.0f;
 
     SDL_InitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR);
@@ -26,6 +26,14 @@ void Input::PreUpdate()
     erase_if(pressed_keys_, [](const auto& item) 
         {auto const& [key, value] = item;
     	return !value.down; });
+
+	for(auto& value : pressed_keys_)
+	{
+		if(value.second.down)
+		{
+            value.second.hasBeenUsed = true;
+		}
+	}
 }
 
 void Input::HandleEvents(const SDL_Event& event)
@@ -109,6 +117,7 @@ void Input::HandleKeyboardEvent(const SDL_Event& event)
         	currentKey.sym = SDL_GetKeyFromScancode(event.key.keysym.scancode);
         	currentKey.mod = event.key.keysym.mod;
             currentKey.down = true;
+            currentKey.hasBeenUsed = false;
             pressed_keys_.insert(std::make_pair(event.key.keysym.scancode, currentKey));
         }
         break;
@@ -144,6 +153,7 @@ void Input::HandleMouseMotionEvent(const SDL_Event& event)
 void Input::HandleMouseButtonEvent(const SDL_Event& event)
 {
 	// event.button
+    // TODO: Flesh out this one
 }
 
 void Input::HandleMouseWheelEvent(const SDL_Event& event)
@@ -157,7 +167,7 @@ bool Input::IsKeyPressed(const uint8_t& key)
     if (auto keysIt = pressed_keys_.find(static_cast<SDL_Scancode>(key));
         keysIt != pressed_keys_.end())
     {
-        return pressed_keys_[static_cast<SDL_Scancode>(key)].down == true;
+        return pressed_keys_[static_cast<SDL_Scancode>(key)].hasBeenUsed == false && pressed_keys_[static_cast<SDL_Scancode>(key)].down == true;
     }
     return false;
 }
