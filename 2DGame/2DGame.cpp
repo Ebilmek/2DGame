@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 	{
 		// Uint32 preFrameTime = SDL_GetTicks();
 		std::chrono::steady_clock::time_point chronoPreTime = std::chrono::high_resolution_clock::now();
-
+		// TODO: Frame rate
 		// Game Loop
 		isExiting = game->RunGame(dt);
 		if(!isExiting)

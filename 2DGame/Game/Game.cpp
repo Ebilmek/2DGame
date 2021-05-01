@@ -12,7 +12,8 @@ Game::Game() : window_ptr_(new WindowSDL()),
                sprite1_(std::make_shared<Sprite>(std::string(R"(Assets\Images\ball.jpg)"))),
                sprite2_(std::make_shared<Sprite>(std::string(R"(Assets\Images\ball.jpg)"))),
                sprite3_(std::make_shared<Sprite>(std::string(R"(Assets\Images\gear.png)"))),
-               time_since_start_(0.0f), font_(new Font(std::string(R"(Assets\Fonts\agane\Agane 55 (roman).ttf)"))),
+               time_since_start_(0.0f),
+               font_(new Font(std::string(R"(Assets\Fonts\agane\Agane 55 (roman).ttf)"))),
                text_(std::make_shared<TextRenderable>(SpriteInfo("")))
 {
 	//windowPtr = std::make_unique<WindowSDL>();
@@ -55,11 +56,12 @@ bool Game::StopGame()
 	// Shutdown input
 	Input* inputHandler = &Input::GetInstance();
 	inputHandler->ShutDown();
+	inputHandler = nullptr;
 	
 	return false;
 }
 
-bool Game::RunGame(const float dt)
+bool Game::RunGame(const float& dt)
 {
 	SDL_Event event;
 	Input* inputHandler = &Input::GetInstance();
@@ -76,6 +78,7 @@ bool Game::RunGame(const float dt)
 	
 	// Event loop
 	// TODO: Could multi-thread this, each event type could have its own thread
+	// TODO: Limit the time of this (limit how many events are read each frame?), just in case of a large influx of events stalling the game
 	while(SDL_PollEvent(&event))
 	{
 		if (event.type > SDL_KEYDOWN && event.type < SDL_MULTIGESTURE)
@@ -112,28 +115,19 @@ bool Game::RunGame(const float dt)
 	const auto [mouseMovementX, mouseMovementY] = inputHandler->GetMouseDelta();
 	sprite2_->sprite_info.transform.Translate(mouseMovementX, mouseMovementY);
 
-	return false;
-}
-
-bool Game::Render(const float dt)
-{	
-	SDL_Renderer* shRenderer = window_ptr_->GetRenderer();
-
-	SDL_RenderClear(shRenderer);
-
-	SDL_SetRenderDrawColor(shRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-	
 	time_since_start_ += dt;
 	const float translate = 64.0f * std::sinf(time_since_start_);
 	transform_.Translate(0.0f, 0.0f);
 	transform_.SetSize(translate, 64.0f);
-	//transform.Rotate(dt * 60.0);
-	const auto localRect = transform_.GetLocationRect();
 
-	Input* input = &Input::GetInstance();
-	
-	
-	SDL_RenderDrawRectF(shRenderer, localRect);
+	return false;
+}
+
+bool Game::Render(const float& dt)
+{	
+	SDL_Renderer* shRenderer = window_ptr_->GetRenderer();
+
+	SDL_RenderClear(shRenderer);
 
 	renderer_.CopyToBuffer(*shRenderer);
 	
@@ -153,6 +147,7 @@ void Game::OnWindowEvent(SDL_Event& event)
 		// TODO: Ignore the movement that will be made on focus gain
 		break;
 	case SDL_WINDOWEVENT_FOCUS_LOST:
+		// TODO: Pause the game? Stop input going nuts?
 		break;
 	default:
 		break;

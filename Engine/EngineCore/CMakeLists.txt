@@ -17,8 +17,12 @@ target_sources (EngineCore PRIVATE
     "SpriteInfo.h" 
     "Renderer.h" "Renderer.cpp" 
     "ImageContainer.h" 
-    "Renderable.h" "TextRenderable.h" 
-    "Font.h" "AnimatedSprite.h" "AnimatedSprite.cpp")
+    "Renderable.h" 
+    "TextRenderable.h" 
+    "Font.h" 
+    "AnimatedSprite.h" "AnimatedSprite.cpp")
+
+add_subdirectory("Events")
 
 # Personal note: Looks at size of a pointer on current system
 # Looked into other means of doing this but most have been deprecated

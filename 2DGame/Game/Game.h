@@ -13,9 +13,9 @@ public:
 
 	bool StopGame();
 
-	bool RunGame(float dt);
+	bool RunGame(const float& dt);
 
-	bool Render(float dt);
+	bool Render(const float& dt);
 
 	void OnWindowEvent(SDL_Event& event);
 
