@@ -8,7 +8,7 @@ void MainMenuState::OnExit()
 {
 }
 
-GameStateEnum MainMenuState::Update(const float& dt)
+GameStateEnum MainMenuState::Update(const float& _dt)
 {
 	return GameStateEnum::kMainMenu;
 }

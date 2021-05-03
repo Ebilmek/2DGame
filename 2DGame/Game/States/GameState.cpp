@@ -8,7 +8,7 @@ void GameState::OnExit()
 {
 }
 
-GameStateEnum GameState::Update(const float& dt)
+GameStateEnum GameState::Update(const float& _dt)
 {
 	return GameStateEnum::kGame;
 }

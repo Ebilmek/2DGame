@@ -4,7 +4,7 @@
 class AnimatedSprite : public Sprite
 {
 public:
-	explicit AnimatedSprite(SpriteInfo& info) : Sprite(info)
+	explicit AnimatedSprite(SpriteInfo& _info) : Sprite(_info)
 	{}
 
 	// Update animation

@@ -8,8 +8,8 @@
 TextureHandler::TextureHandler()
 {
 	const int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
-	const int outFlags = IMG_Init(imgFlags);
-	if (outFlags != imgFlags)
+	if (const int outFlags = IMG_Init(imgFlags); 
+		outFlags != imgFlags)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_image not implemented or IMG_Init failed");
 	}
@@ -47,7 +47,7 @@ TextureHandler::~TextureHandler()
 	TTF_Quit();
 }
 
-void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& renderer)
+void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& _renderer)
 {
 	SDL_LogInfo(SDL_LOG_CATEGORY_RENDER, "Adding Texture with name: %s", name.c_str());
 	if (const auto textureIt = texture_pool_.find(name); textureIt != texture_pool_.end())
@@ -68,7 +68,7 @@ void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& renderer
 			return;
 		}
 		
-		SDL_Texture* texture = SDL_CreateTextureFromSurface(&renderer, loadSurface);
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(&_renderer, loadSurface);
 		if (texture == nullptr)
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Image not transferred correctly: %s", concatFileName.c_str());
@@ -85,15 +85,15 @@ void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& renderer
 	}
 }
 
-void TextureHandler::AddTexture(const std::string& name, SDL_Texture& texture)
+void TextureHandler::AddTexture(const std::string& _name, SDL_Texture& _texture)
 {
-	auto* image = new ImageContainer(&texture, 1);
-	texture_pool_.insert(std::make_pair(name, image));
+	auto* image = new ImageContainer(&_texture, 1);
+	texture_pool_.insert(std::make_pair(_name, image));
 }
 
-void TextureHandler::RemoveTexture(const std::string& name)
+void TextureHandler::RemoveTexture(const std::string& _name)
 {
-	if (auto texture = texture_pool_.find(name); 
+	if (auto texture = texture_pool_.find(_name); 
 		texture != texture_pool_.end())
 	{
 		// If ref count hits 0, remove the texture from the container
@@ -107,6 +107,6 @@ void TextureHandler::RemoveTexture(const std::string& name)
 	}
 	else
 	{
-		SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Trying to remove texture not currently in texture pool: %s", name.c_str());
+		SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Trying to remove texture not currently in texture pool: %s", _name.c_str());
 	}
 }

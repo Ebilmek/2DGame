@@ -16,24 +16,24 @@ public:
 	 *	\brief Copies the stored textures into the given renderer using the stored data
 	 *	\returns SDL return from the copy if there is an error
 	 */
-	int CopyToBuffer(SDL_Renderer& renderer);
+	int CopyToBuffer(SDL_Renderer& _renderer);
 
 	/**
 	 * \brief Tie the object to the renderable 
-	 * \param renderable Object that can be rendered
-	 * \param renderer The current window renderer
+	 * \param _renderable Object that can be rendered
+	 * \param _renderer The current window renderer
 	 * \return If the process failed
 	 */
-	bool RegisterRenderable(const Renderable& renderable, SDL_Renderer& renderer);
+	bool RegisterRenderable(const Renderable& _renderable, SDL_Renderer& _renderer);
 
-	bool RegisterRenderable(TextRenderable& renderable, SDL_Renderer& renderer, std::string text, Font* font);
+	bool RegisterRenderable(TextRenderable& _renderable, SDL_Renderer& _renderer, std::string _text, Font* _font);
 	
 	/**
 	 * \brief Unlink the renderable and update the texture pool
-	 * \param renderable Renderable to unlink
+	 * \param _renderable Renderable to unlink
 	 * \return If the process failed
 	 */
-	bool RemoveRenderable(const std::shared_ptr<Renderable>& renderable);
+	bool RemoveRenderable(const std::shared_ptr<Renderable>& _renderable);
 
 	/**
 	 *	\brief Gets amount of textures stored

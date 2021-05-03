@@ -14,19 +14,19 @@ class Transform2D
 {
 public:
 	/**
-	 *	\param in_pos_and_size SDL_FRect containing position and size
-	 *	\param in_rotation Starting rotation in degrees 
-	 *	\param in_flip Current mirrored direction, can use bitwise OR to flip in two directions
+	 *	\param _pos_and_size SDL_FRect containing position and size
+	 *	\param _rotation Starting rotation in degrees 
+	 *	\param _flip Current mirrored direction, can use bitwise OR to flip in two directions
 	 */
-	Transform2D(SDL_FRect in_pos_and_size, double in_rotation = 0.0, SDL_RendererFlip in_flip = SDL_FLIP_NONE);
+	Transform2D(SDL_FRect _pos_and_size, double _rotation = 0.0, SDL_RendererFlip _flip = SDL_FLIP_NONE);
 
 	/**
 	 *	\brief Move position by x and y amount
 	 *
-	 *	\param x Amount to move horizontally
-	 *	\param y Amount to move vertically
+	 *	\param _x Amount to move horizontally
+	 *	\param _y Amount to move vertically
 	 */
-	void Translate(float x, float y);
+	void Translate(float _x, float _y);
 
 	/**
 	 *	\brief Getter for position and size SDL_FRect
@@ -38,40 +38,40 @@ public:
 	/**
 	 *	\brief Increase or decrease size with a multiplier
 	 *
-	 *	\param multiplier_x Amount to multiply width with, set to -1 to ignore (<0)
-	 *	\param multiplier_y Amount to multiply height with, set to -1 to ignore (<0)
+	 *	\param _multiplier_x Amount to multiply width with, set to -1 to ignore (<0)
+	 *	\param _multiplier_y Amount to multiply height with, set to -1 to ignore (<0)
 	 */
-	void MultiplySize(float multiplier_x, float multiplier_y);
+	void MultiplySize(float _multiplier_x, float _multiplier_y);
 
 	/**
 	 *	\brief Sets the size of the rect, will flip automatically
 	 *
-	 *	\param width Amount to set width to, negative will flip it in this direction
-	 *	\param height Amount to multiply height with, set to -1 to ignore (<0)
+	 *	\param _width Amount to set width to, negative will flip it in this direction
+	 *	\param _height Amount to multiply height with, set to -1 to ignore (<0)
 	 */
-	void SetSize(float width, float height);
+	void SetSize(float _width, float _height);
 	
 	/**
 	 *	\brief Sets the size of the rect, will not flip if size is negative
 	 *
-	 *	\param width Amount to set width to, negative will flip it in this direction
-	 *	\param height Amount to multiply height with, set to -1 to ignore (<0)
+	 *	\param _width Amount to set width to, negative will flip it in this direction
+	 *	\param _height Amount to multiply height with, set to -1 to ignore (<0)
 	 */
-	void SetSizeNoFlip(float width, float height);
+	void SetSizeNoFlip(float _width, float _height);
 
 	/**
 	 *	\brief Rotate by set amount of degrees
 	 *
-	 *	\param in_rotation in degrees
+	 *	\param _rotation in degrees
 	 */
-	void Rotate(double in_rotation);
+	void Rotate(double _rotation);
 
 	/**
 		 *	\brief Rotate by set amount of degrees
 		 *
-		 *	\param in_rotation in degrees
+		 *	\param _rotation in degrees
 		 */
-	void SetRotation(double in_rotation);
+	void SetRotation(double _rotation);
 
 	/**
 	 *	\brief Getter for rotation 

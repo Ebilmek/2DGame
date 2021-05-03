@@ -12,11 +12,11 @@ public:
 	// Create a SDL window
 	bool CreateWindow();
 	// Create a SDL window with stated size
-	bool CreateWindow(const uint16_t window_width, const uint16_t window_height, const std::string& name);
+	bool CreateWindow(const uint16_t _window_width, const uint16_t _window_height, const std::string& _name);
 
 	// Destroy old and create a window with given size
 	// Used for resizing on the fly
-	bool RegenerateWindow(const uint16_t window_width, const uint16_t window_height, const std::string& name);
+	bool RegenerateWindow(const uint16_t _window_width, const uint16_t _window_height, const std::string& _name);
 
 	// Display window
 	bool DisplayWindow();

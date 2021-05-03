@@ -10,7 +10,7 @@ bool WindowSDL::CreateWindow()
 	return CreateWindow(window_width_, window_height_, window_name_);
 }
 
-bool WindowSDL::CreateWindow(const uint16_t window_width, const uint16_t window_height, const std::string& name)
+bool WindowSDL::CreateWindow(const uint16_t _window_width, const uint16_t _window_height, const std::string& _name)
 {
 	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) 
 	{
@@ -25,16 +25,16 @@ bool WindowSDL::CreateWindow(const uint16_t window_width, const uint16_t window_
 	}
 
 	// Window setup
-	window_width_ = window_width;
-	window_height_ = window_height;
-	window_name_ = name;
+	window_width_ = _window_width;
+	window_height_ = _window_height;
+	window_name_ = _name;
 	
 	window_ptr_ = SDL_CreateWindow(
 		"2D Game",
 		SDL_WINDOWPOS_UNDEFINED, 
 		SDL_WINDOWPOS_UNDEFINED,
-		window_width, 
-		window_height,
+		_window_width, 
+		_window_height,
 		SDL_WINDOW_SHOWN
 	);
 
@@ -57,12 +57,12 @@ bool WindowSDL::CreateWindow(const uint16_t window_width, const uint16_t window_
 	return false;
 }
 
-bool WindowSDL::RegenerateWindow(const uint16_t window_width, const uint16_t window_height, const std::string& name)
+bool WindowSDL::RegenerateWindow(const uint16_t _window_width, const uint16_t _window_height, const std::string& _name)
 {
 	// @TODO: Handle errors and maybe carry this out in a better way
 	DeleteWindow();
 
-	CreateWindow(window_width, window_height, name);
+	CreateWindow(_window_width, _window_height, _name);
 	
 	return false;
 }

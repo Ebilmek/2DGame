@@ -6,9 +6,9 @@
 class Font
 {
 public:
-	explicit Font(const std::string file)
+	explicit Font(const std::string _file)
 	{
-		font_ptr_ = TTF_OpenFont(file.c_str(), 16);
+		font_ptr_ = TTF_OpenFont(_file.c_str(), 16);
 	}
 	~Font()
 	{

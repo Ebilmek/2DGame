@@ -9,9 +9,9 @@
 
 struct ImageContainer
 {
-	ImageContainer(SDL_Texture* image, const int ref_count = 0)
-		: image(image),
-		  ref_count(ref_count)
+	ImageContainer(SDL_Texture* _image, const int _ref_count = 0)
+		: image(_image),
+		  ref_count(_ref_count)
 	{
 	}
 	~ImageContainer()

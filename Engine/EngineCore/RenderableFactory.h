@@ -4,11 +4,11 @@
 
 namespace RenderableFactory
 {
-	std::shared_ptr<Renderable> CreateRenderable(const SpriteInfo& sprite_info, SDL_Renderer& renderer_sdl, Renderer& renderer)
+	std::shared_ptr<Renderable> CreateRenderable(const SpriteInfo& _sprite_info, SDL_Renderer& _renderer_sdl, Renderer& _renderer)
 	{
-		std::shared_ptr<Renderable> renderable = std::make_shared<Renderable>(sprite_info);
+		std::shared_ptr<Renderable> renderable = std::make_shared<Renderable>(_sprite_info);
 
-		renderer.RegisterRenderable(*renderable, renderer_sdl);
+		_renderer.RegisterRenderable(*renderable, _renderer_sdl);
 
 		return renderable;
 	}

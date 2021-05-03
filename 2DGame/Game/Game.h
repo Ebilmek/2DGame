@@ -13,11 +13,11 @@ public:
 
 	bool StopGame();
 
-	bool RunGame(const float& dt);
+	bool RunGame(const float& _dt);
 
-	bool Render(const float& dt);
+	bool Render(const float& _dt);
 
-	void OnWindowEvent(SDL_Event& event);
+	void OnWindowEvent(SDL_Event& _event);
 
 private:
 	std::unique_ptr<WindowSDL> window_ptr_;

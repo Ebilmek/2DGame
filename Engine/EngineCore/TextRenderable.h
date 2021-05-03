@@ -5,8 +5,8 @@
 class TextRenderable final : public Renderable
 {
 public:
-	explicit TextRenderable(const SpriteInfo& info) :
-		Renderable(info)
+	explicit TextRenderable(const SpriteInfo& _info) :
+		Renderable(_info)
 	{
 	}
 

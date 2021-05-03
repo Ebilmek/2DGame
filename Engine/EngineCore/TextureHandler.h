@@ -23,19 +23,19 @@ public:
 	~TextureHandler();
 
 	// Load texture if not present, otherwise add one to the ref count
-	void LoadTexture(const std::string& name, SDL_Renderer& renderer);
+	void LoadTexture(const std::string& _name, SDL_Renderer& _renderer);
 
-	void AddTexture(const std::string& name, SDL_Texture& texture);
+	void AddTexture(const std::string& _name, SDL_Texture& _texture);
 
 	// Remove one from the ref count, if 0 delete the texture.
-	void RemoveTexture(const std::string& name);
+	void RemoveTexture(const std::string& _name);
 
 	/**
 	 * \brief Get a pointer to the loaded texture within the container
 	 *
-	 * \param name Must be the shortened version of the filepath from executable to file. Full file path must not be included.
+	 * \param _name Must be the shortened version of the filepath from executable to file. Full file path must not be included.
 	 */
-	SDL_Texture* GetTexture(const std::string& name);
+	SDL_Texture* GetTexture(const std::string& _name);
 
 	/**
 	 * \brief Get the amount of buckets in the container (unique textures)
@@ -50,7 +50,7 @@ private:
 	std::string file_path_;
 };
 
-inline SDL_Texture* TextureHandler::GetTexture(const std::string& name)
+inline SDL_Texture* TextureHandler::GetTexture(const std::string& _name)
 {
-	return texture_pool_[name]->image;
+	return texture_pool_[_name]->image;
 }

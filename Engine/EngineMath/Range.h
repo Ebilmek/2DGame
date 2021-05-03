@@ -2,8 +2,8 @@
 
 namespace SHMath
 {
-	bool InRange(const int low, const int high, const int x)
+	bool InRange(const int _low, const int _high, const int _x)
 	{
-		return ((x - high) * (x - low) <= 0);
+		return ((_x - _high) * (_x - _low) <= 0);
 	}
 }

@@ -32,7 +32,7 @@ bool Game::StartGame()
 	renderer_.RegisterRenderable(*sprite3_, *shRenderer);
 
 	text_->sprite_info.transform.Translate(100.0f, 500.0f);
-	text_->sprite_info.zValue = 100.0f;
+	text_->sprite_info.z_value = 100.0f;
 	renderer_.RegisterRenderable(*text_, *shRenderer, "Hi there!", font_);
 
 	// Initialise input
@@ -61,7 +61,7 @@ bool Game::StopGame()
 	return false;
 }
 
-bool Game::RunGame(const float& dt)
+bool Game::RunGame(const float& _dt)
 {
 	SDL_Event event;
 	Input* inputHandler = &Input::GetInstance();
@@ -115,7 +115,7 @@ bool Game::RunGame(const float& dt)
 	const auto [mouseMovementX, mouseMovementY] = inputHandler->GetMouseDelta();
 	sprite2_->sprite_info.transform.Translate(mouseMovementX, mouseMovementY);
 
-	time_since_start_ += dt;
+	time_since_start_ += _dt;
 	const float translate = 64.0f * std::sinf(time_since_start_);
 	transform_.Translate(0.0f, 0.0f);
 	transform_.SetSize(translate, 64.0f);
@@ -123,7 +123,7 @@ bool Game::RunGame(const float& dt)
 	return false;
 }
 
-bool Game::Render(const float& dt)
+bool Game::Render(const float& _dt)
 {	
 	SDL_Renderer* shRenderer = window_ptr_->GetRenderer();
 
@@ -137,11 +137,11 @@ bool Game::Render(const float& dt)
 	return false;
 }
 
-void Game::OnWindowEvent(SDL_Event& event)
+void Game::OnWindowEvent(SDL_Event& _event)
 {
 	Input* inputHandler = &Input::GetInstance();
 	
-	switch (event.type)
+	switch (_event.type)
 	{
 	case SDL_WINDOWEVENT_FOCUS_GAINED:
 		// TODO: Ignore the movement that will be made on focus gain

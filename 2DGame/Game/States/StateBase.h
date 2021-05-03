@@ -8,5 +8,5 @@ public:
 
 	virtual void OnEnter() = 0;
 	virtual void OnExit() = 0;
-	virtual GameStateEnum Update(const float& dt) = 0;
+	virtual GameStateEnum Update(const float& _dt) = 0;
 };

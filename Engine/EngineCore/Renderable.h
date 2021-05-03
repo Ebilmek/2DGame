@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "SDL_log.h"
-#include "SpriteInfo.h"
+#include "RenderableInfo/SpriteInfo.h"
 
 /*
  * Built to be stored with a shared pointer to it
@@ -14,7 +14,7 @@
 class Renderable: public std::enable_shared_from_this<Renderable>
 {
 public:
-	explicit Renderable(SpriteInfo info) : sprite_info(std::move(info)) {}
+	explicit Renderable(SpriteInfo _info) : sprite_info(std::move(_info)) {}
 
 	// Reduce shared pointer misuse
 	std::shared_ptr<Renderable> GetSharedPtr()
@@ -23,7 +23,7 @@ public:
 	}
 	
 	// Overload less than for sorting
-	bool operator<(const Renderable& rhs) const { return sprite_info.zValue < rhs.sprite_info.zValue; }
+	bool operator<(const Renderable& _rhs) const { return sprite_info.z_value < _rhs.sprite_info.z_value; }
 	
 	SpriteInfo sprite_info;
 };
@@ -42,11 +42,11 @@ inline bool operator==(const std::weak_ptr<const Renderable>& a, const std::weak
 		}
 		else if (a.expired())
 		{
-			imageName = b.lock()->sprite_info.imageName;
+			imageName = b.lock()->sprite_info.image_name;
 		}
 		else
 		{
-			imageName = a.lock()->sprite_info.imageName;
+			imageName = a.lock()->sprite_info.image_name;
 		}
 
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Renderable not found before comparing with: %s", imageName.c_str());
@@ -72,12 +72,12 @@ inline bool operator<(const std::weak_ptr<const Renderable>& a, const std::weak_
 		}
 		else if(a.expired())
 		{
-			imageName = b.lock()->sprite_info.imageName;
+			imageName = b.lock()->sprite_info.image_name;
 			returnType = false;
 		}
 		else
 		{
-			imageName = a.lock()->sprite_info.imageName;
+			imageName = a.lock()->sprite_info.image_name;
 			returnType = true;
 		}
 
@@ -85,5 +85,5 @@ inline bool operator<(const std::weak_ptr<const Renderable>& a, const std::weak_
 		return returnType;
 	}
 	
-	return a.lock()->sprite_info.zValue < b.lock()->sprite_info.zValue;
+	return a.lock()->sprite_info.z_value < b.lock()->sprite_info.z_value;
 }

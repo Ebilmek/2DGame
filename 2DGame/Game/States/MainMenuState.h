@@ -9,7 +9,7 @@ public:
 	
 	void OnEnter() override;
 	void OnExit() override;
-	GameStateEnum Update(const float& dt) override;
+	GameStateEnum Update(const float& _dt) override;
 
 private:
 	Sprite* background_;

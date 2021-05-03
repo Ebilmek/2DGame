@@ -44,11 +44,11 @@ public:
 
 	// Log message
 	template<typename T, typename...Ts>
-	constexpr void LogMessage(int channel, T head, Ts... tail);
+	constexpr void LogMessage(int _channel, T _head, Ts... _tail);
 
 	// Log error
 	template<typename T, typename...Ts>
-	constexpr void LogError(int channel, T head, Ts... tail);
+	constexpr void LogError(int _channel, T _head, Ts... _tail);
 
 	// Output to file
 
@@ -64,15 +64,15 @@ public:
 };
 
 template<typename T, typename ...Ts>
-inline constexpr void SHDebug::LogMessage(int channel, T head, Ts ...tail)
+inline constexpr void SHDebug::LogMessage(int _channel, T _head, Ts ..._tail)
 {
 	if constexpr (DebugHelper::IsDebug())
 	{
-		SDL_LogVerbose(channel, T, Ts);
+		SDL_LogVerbose(_channel, _head, _tail);
 	}
 }
 
 template <typename T, typename ... Ts>
-constexpr void SHDebug::LogError(int channel, T head, Ts... tail)
+constexpr void SHDebug::LogError(int _channel, T _head, Ts... _tail)
 {
 }

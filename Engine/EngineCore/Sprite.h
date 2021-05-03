@@ -3,12 +3,13 @@
 
 #include "Renderable.h"
 #include "SDL.h"
+#include "RenderableInfo/SpriteInfo.h"
 
 
 class Sprite : public Renderable
 {
 public:
-	explicit Sprite(const SpriteInfo& info) : Renderable(info)
+	explicit Sprite(const SpriteInfo& _info) : Renderable(_info)
 	{
 	}
 

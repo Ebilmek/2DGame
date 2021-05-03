@@ -8,7 +8,7 @@ void SettingsState::OnExit()
 {
 }
 
-GameStateEnum SettingsState::Update(const float& dt)
+GameStateEnum SettingsState::Update(const float& _dt)
 {
 	return GameStateEnum::kSettings;
 }

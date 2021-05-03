@@ -32,59 +32,59 @@ public:
 	void operator=(Input const&) = delete;
 	// Rest of declarations ahead
 
-	void Initialise(const uint16_t& window_width, const uint16_t& window_height);
+	void Initialise(const uint16_t& _window_width, const uint16_t& _window_height);
 	void ShutDown();
 
 	// Call before event loop
 	void PreUpdate();
 
 	// Handle all SDL input events
-	void HandleEvents(const SDL_Event& event);
+	void HandleEvents(const SDL_Event& _event);
 	
 	/**
 	 * \brief Check if keyboard key is pressed, only true for one frame when pressed
-	 * \param key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
+	 * \param _key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
 	 * \sa SDL_Scancode
 	 * \return Whether keyboard key is pressed
 	 */
-	bool IsKeyPressed(const uint8_t& key);
+	bool IsKeyPressed(const uint8_t& _key);
 
 	/**
 	 * \brief Check if keyboard key is released, only true for one frame when released
-	 * \param key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
+	 * \param _key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
 	 * \sa SDL_Scancode
 	 * \return Whether keyboard key is pressed
 	 */
-	bool IsKeyReleased(const uint8_t& key);
+	bool IsKeyReleased(const uint8_t& _key);
 
 	/**
 	 * \brief Check if keyboard key is down, if using for one frame see IsKeyPressed 
-	 * \param key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
+	 * \param _key see SDL_Scancode enumerator, uses SDL_SCANCODE_A etc.
 	 * \sa SDL_Scancode
 	 * \return Whether keyboard key is pressed
 	 */
-	bool IsKeyDown(const uint8_t& key);
+	bool IsKeyDown(const uint8_t& _key);
 
 	/**
 	 * \brief Check if mouse button is pressed, only true for one frame when pressed
-	 * \param mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
+	 * \param _mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
 	 * \return Whether mouse button is pressed
 	 */
-	bool IsMouseButtonPressed(const int& mouse_button);
+	bool IsMouseButtonPressed(const int& _mouse_button);
 
 	/**
 	 * \brief Check if mouse button is released, only true for one frame when released
-	 * \param mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
+	 * \param _mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
 	 * \return Whether mouse button is released
 	 */
-	bool IsMouseButtonReleased(const int& mouse_button);
+	bool IsMouseButtonReleased(const int& _mouse_button);
 
 	/**
 	 * \brief Check if mouse button is down, if using for one frame see IsMouseButtonPressed
-	 * \param mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
+	 * \param _mouse_button see SDL_Mouse defines, uses SDL_BUTTON_LEFT etc.
 	 * \return Whether mouse button is down
 	 */
-	bool IsMouseButtonDown(const int& mouse_button);
+	bool IsMouseButtonDown(const int& _mouse_button);
 
 	
 	/**
@@ -94,20 +94,26 @@ public:
 	void OutputAllPressedKeys();
 
 	[[nodiscard]] std::pair<int, int> GetMousePosition() const { return mouse_position_; }
+
+	/**
+	 * \brief Retrieve mouse movement for the frame
+	 * \return X & Y movement respectively
+	 */
 	[[nodiscard]] std::pair<int, int> GetMouseDelta() const { return mouse_delta_; }
+	
 	/* Keyboard events*/
 
 private:
 	// Individual event handlers
-	void HandleKeyboardEvent(const SDL_Event& event);
-	void HandleTextEditingEvent(const SDL_Event& event);
-	void HandleTextInputEvent(const SDL_Event& event);
-	void HandleMouseMotionEvent(const SDL_Event& event);
-	void HandleMouseButtonEvent(const SDL_Event& event);
-	void HandleMouseWheelEvent(const SDL_Event& event);
+	void HandleKeyboardEvent(const SDL_Event& _event);
+	void HandleTextEditingEvent(const SDL_Event& _event);
+	void HandleTextInputEvent(const SDL_Event& _event);
+	void HandleMouseMotionEvent(const SDL_Event& _event);
+	void HandleMouseButtonEvent(const SDL_Event& _event);
+	void HandleMouseWheelEvent(const SDL_Event& _event);
 
 	// Check whether mouse_button is valid, if it's in range of the defines within SDL_Mouse
-	bool IsInMouseButtonRange(const int& mouse_button);
+	bool IsInMouseButtonRange(const int& _mouse_button);
 
 	// Current mouse location (first: x, second: y)
 	std::pair<int, int> mouse_position_;
