@@ -6,10 +6,10 @@
 
 struct FontInfo final : public InfoBase
 {
-	FontInfo(const Transform2D& _transform, const float& _z_value, SDL_Rect* _src_rect, SDL_FPoint* _centre_of_rotation,
+	FontInfo(const Transform2D& _transform, RenderLayer _layer, const float& _z_value, SDL_Rect* _src_rect, SDL_FPoint* _centre_of_rotation,
 		std::string _text, const int _style, const int _font_size, const SDL_Color& _text_color,
 		const SDL_Color& _background_color, const int _wrap_width, const RenderType _render_type)
-		: InfoBase(_transform, _z_value, _src_rect, _centre_of_rotation),
+		: InfoBase(_transform, _layer, _z_value, _src_rect, _centre_of_rotation),
 		  text(std::move(_text)),
 		  style(_style),
 		  font_size(_font_size),

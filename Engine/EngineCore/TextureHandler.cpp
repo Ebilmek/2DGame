@@ -44,6 +44,7 @@ TextureHandler::~TextureHandler()
 
 	// TODO: Make this multiple screen friendly, Quit these on application shutdown
 	IMG_Quit();
+	// TODO: Remove this when font handler is created
 	TTF_Quit();
 }
 

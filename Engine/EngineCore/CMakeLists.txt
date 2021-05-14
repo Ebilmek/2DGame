@@ -19,7 +19,9 @@ target_sources (EngineCore PRIVATE
     "Renderable.h" 
     "TextRenderable.h" 
     "Font.h" 
-    "AnimatedSprite.h" "AnimatedSprite.cpp" "RenderableInfo/RenderType.h")
+    "AnimatedSprite.h" "AnimatedSprite.cpp" 
+    "EventFacade.h" "EventFacade.cpp" 
+    "FontHandler.h" "FontHandler.cpp")
 
 add_subdirectory("Events")
 add_subdirectory("RenderableInfo")

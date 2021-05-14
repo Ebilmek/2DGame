@@ -3,7 +3,7 @@
 
 #include "Renderable.h"
 #include "SDL.h"
-#include "RenderableInfo/SpriteInfo.h"
+#include "SpriteInfo.h"
 
 
 class Sprite : public Renderable

@@ -16,24 +16,11 @@
 class Input
 {
 public:
-	// Singleton implementation
-	// Scott Meyers Effective Modern C++ better error message if the deleted functions are in public
-	static Input& GetInstance()
-	{
-		static Input instance;
-		return instance;
-	}
+	Input(const uint16_t& _window_width, const uint16_t& _window_height);
+	~Input();
 
-private:
-	Input() {}
-
-public:
 	Input(Input const&) = delete;
-	void operator=(Input const&) = delete;
-	// Rest of declarations ahead
-
-	void Initialise(const uint16_t& _window_width, const uint16_t& _window_height);
-	void ShutDown();
+	void operator=(const Input &) = delete;
 
 	// Call before event loop
 	void PreUpdate();
@@ -137,7 +124,7 @@ private:
 		int sym;
 		Uint16 mod;
 		bool down;
-		bool hasBeenUsed;
+		bool has_been_used;
 	};
 
 	// Keyboard presses bitwise new update and last frame for held?

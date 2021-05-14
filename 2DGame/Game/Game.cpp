@@ -1,11 +1,9 @@
 #include "Game.h"
 
 #include <string>
-#include <cmath>
 
 #include "SDL_rect.h"
-#include "SHDebug.h"
-#include "Input.h"
+#include "EventFacade.h"
 
 Game::Game() : window_ptr_(new WindowSDL()),
                transform_(SDL_FRect({100.f, 100.f, 64.f, 64.f})),
@@ -35,11 +33,9 @@ bool Game::StartGame()
 	text_->sprite_info.z_value = 100.0f;
 	renderer_.RegisterRenderable(*text_, *shRenderer, "Hi there!", font_);
 
-	// Initialise input
-	Input* inputHandler = &Input::GetInstance();
-	const auto windowSize = window_ptr_->GetWindowSize();
-	inputHandler->Initialise(windowSize.first, windowSize.second);
-	inputHandler = nullptr;
+	// Initialize input
+	const auto [width, height] = window_ptr_->GetWindowSize();
+	EventFacade::GetInstance().InitializeInput(width, height);
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	
@@ -52,11 +48,6 @@ bool Game::StopGame()
 	renderer_.RemoveRenderable(sprite2_);
 	renderer_.RemoveRenderable(sprite3_);
 	renderer_.RemoveRenderable(text_);
-
-	// Shutdown input
-	Input* inputHandler = &Input::GetInstance();
-	inputHandler->ShutDown();
-	inputHandler = nullptr;
 	
 	return false;
 }
@@ -64,7 +55,7 @@ bool Game::StopGame()
 bool Game::RunGame(const float& _dt)
 {
 	SDL_Event event;
-	Input* inputHandler = &Input::GetInstance();
+	Input* inputHandler = EventFacade::GetInstance().GetInput();
 
 	inputHandler->PreUpdate();
 
@@ -114,6 +105,7 @@ bool Game::RunGame(const float& _dt)
 	//const auto mouseMovement = inputHandler->GetMouseDelta();
 	const auto [mouseMovementX, mouseMovementY] = inputHandler->GetMouseDelta();
 	sprite2_->sprite_info.transform.Translate(mouseMovementX, mouseMovementY);
+	inputHandler = nullptr;
 
 	time_since_start_ += _dt;
 	const float translate = 64.0f * std::sinf(time_since_start_);
@@ -139,7 +131,7 @@ bool Game::Render(const float& _dt)
 
 void Game::OnWindowEvent(SDL_Event& _event)
 {
-	Input* inputHandler = &Input::GetInstance();
+	Input* inputHandler = EventFacade::GetInstance().GetInput();
 	
 	switch (_event.type)
 	{

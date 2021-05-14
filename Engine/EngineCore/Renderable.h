@@ -4,11 +4,13 @@
 #include <utility>
 
 #include "SDL_log.h"
-#include "RenderableInfo/SpriteInfo.h"
+#include "SpriteInfo.h"
 
 /*
- * Built to be stored with a shared pointer to it
- * Register with a 
+ *	Renderable
+ *
+ *	Base class for images!
+ *	Built to be stored with a shared pointer to it
  */
 
 class Renderable: public std::enable_shared_from_this<Renderable>
@@ -29,55 +31,55 @@ public:
 };
 
 // Weak pointer overload
-inline bool operator==(const std::weak_ptr<const Renderable>& a, const std::weak_ptr<const Renderable>& b)
+inline bool operator==(const std::weak_ptr<const Renderable>& _a, const std::weak_ptr<const Renderable>& _b)
 {
 	// Handle if one or both of the inputs are expired
-	if (a.expired() || b.expired())
+	if (_a.expired() || _b.expired())
 	{
 		std::string imageName;
 		// push all of the missing ones to the end
-		if (a.expired() && b.expired())
+		if (_a.expired() && _b.expired())
 		{
 			imageName = "unknown, more than one were detected.";
 		}
-		else if (a.expired())
+		else if (_a.expired())
 		{
-			imageName = b.lock()->sprite_info.image_name;
+			imageName = _b.lock()->sprite_info.image_name;
 		}
 		else
 		{
-			imageName = a.lock()->sprite_info.image_name;
+			imageName = _a.lock()->sprite_info.image_name;
 		}
 
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Renderable not found before comparing with: %s", imageName.c_str());
 		return false;
 	}
 	
-	return a.lock() == b.lock();
+	return _a.lock() == _b.lock();
 }
 
 // Weak pointer overload
-inline bool operator<(const std::weak_ptr<const Renderable>& a, const std::weak_ptr<const Renderable>& b)
+inline bool operator<(const std::weak_ptr<const Renderable>& _a, const std::weak_ptr<const Renderable>& _b)
 {
 	// Handle if one or both of the inputs are expired
-	if(a.expired() || b.expired())
+	if(_a.expired() || _b.expired())
 	{
 		std::string imageName;
 		bool returnType;
 		// push all of the missing ones to the end
-		if (a.expired() && b.expired())
+		if (_a.expired() && _b.expired())
 		{
 			imageName = "unknown, more than one were detected.";
 			returnType = true;
 		}
-		else if(a.expired())
+		else if(_a.expired())
 		{
-			imageName = b.lock()->sprite_info.image_name;
+			imageName = _b.lock()->sprite_info.image_name;
 			returnType = false;
 		}
 		else
 		{
-			imageName = a.lock()->sprite_info.image_name;
+			imageName = _a.lock()->sprite_info.image_name;
 			returnType = true;
 		}
 
@@ -85,5 +87,5 @@ inline bool operator<(const std::weak_ptr<const Renderable>& a, const std::weak_
 		return returnType;
 	}
 	
-	return a.lock()->sprite_info.z_value < b.lock()->sprite_info.z_value;
+	return _a.lock()->sprite_info.z_value < _b.lock()->sprite_info.z_value;
 }
