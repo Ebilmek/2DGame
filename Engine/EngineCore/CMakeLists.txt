@@ -12,7 +12,7 @@ target_sources (EngineCore PRIVATE
     "SHDebug.cpp" "SHDebug.h"
     "Input.cpp" "Input.h"
     "WindowSDL.cpp" "WindowSDL.h"
-    "EventFacade.h" "EventFacade.cpp")
+    "EventFacade.h" "EventFacade.cpp" "Renderer/FontInfoHandler.cpp")
 
 add_subdirectory("Events")
 add_subdirectory("RenderableInfo")

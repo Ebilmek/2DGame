@@ -87,7 +87,7 @@ bool FontHandler::RegisterRenderable(std::shared_ptr<TextRenderable> _renderable
 	int w = 0, h = 0;
 	TTF_SizeText(font, fontInfo->text.c_str(), &w, &h);
 	_renderable->font_info.transform.SetSize(w, h);
-	renderables_.push_back(_renderable);
+	font_info_handler_->AddFontInfo(_renderable);
 
 	//SDL_FreeSurface(surface);
 
@@ -98,12 +98,9 @@ bool FontHandler::RegisterRenderable(std::shared_ptr<TextRenderable> _renderable
 
 bool FontHandler::RemoveRenderable(std::shared_ptr<TextRenderable> _renderable)
 {
-	if (const auto resultIt = std::ranges::find(renderables_.cbegin(), renderables_.cend(), _renderable);
-		resultIt != renderables_.cend())
+	if (font_info_handler_->RemoveFontInfo(_renderable))
 	{
-		SDL_Log("Removing: %s", (*resultIt)->font_info.image_name.c_str());
-		RemoveText((*resultIt)->font_info.image_name);
-		renderables_.erase(resultIt);
+		RemoveText(_renderable->font_info.image_name);
 	}
 	else
 	{
@@ -124,26 +121,22 @@ void FontHandler::SortPoolByZ()
 	// Sort the elements by Z value
 	if (!is_info_sorted_by_z_)
 	{
-		std::sort(renderables_.begin(),
-			renderables_.end()
-		);
+		font_info_handler_->SortFontInfo();
 		is_info_sorted_by_z_ = true;
 	}
 }
 
-int FontHandler::GetPoolAmount()
+size_t FontHandler::GetPoolAmount()
 {
-	return renderables_.size();
+	return font_info_handler_->GetFontInfoAmount();
 }
 
-std::weak_ptr<const TextRenderable> FontHandler::GetTextRenderableAt(unsigned int position)
+std::shared_ptr<TextRenderable> FontHandler::GetTextRenderableAt(unsigned int _position) const
 {
-	if(position < renderables_.size())
-		return renderables_.at(position);
-	return std::weak_ptr<const TextRenderable>();
+	return font_info_handler_->GetFontInfo(_position);
 }
 
-void FontHandler::OnNotify(FontInfo _info, Event _event)
+void FontHandler::OnNotify(FontInfo _info, const Event _event)
 {
 	switch (_event)
 	{

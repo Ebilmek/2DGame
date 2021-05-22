@@ -6,6 +6,7 @@
 #include "ObserverSprite.h"
 #include "SDL_render.h"
 #include "Sprite.h"
+#include "TextureInfoHandler.h"
 
 
 /*
@@ -54,13 +55,13 @@ public:
 	virtual void OnNotify(SpriteInfo _info, Event _event) override;
 
 private:
-	std::vector<std::shared_ptr<Sprite>> renderables_;
-
 	bool is_info_sorted_by_z_ = true;
 
 	std::unordered_map<std::string, ImageContainer> texture_pool_;
 
 	std::string file_path_;
+
+	std::unique_ptr<TextureInfoHandler> texture_info_handler_ = std::make_unique<TextureInfoHandler>();
 };
 
 inline SDL_Texture* TextureHandler::GetTexture(const std::string& _name)

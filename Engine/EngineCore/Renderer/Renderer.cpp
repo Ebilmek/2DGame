@@ -26,7 +26,7 @@ int Renderer::CopyToBuffer(SDL_Renderer* _renderer)
 		{
 			// TODO: Fix this comparison when font gets sorted.
 			const SpriteInfo& spriteInfo = texture_handler_->GetSpriteAt(textureIt)->sprite_info;
-			const FontInfo& fontInfo = font_handler_->GetTextRenderableAt(fontIt).lock()->font_info;
+			const FontInfo& fontInfo = font_handler_->GetTextRenderableAt(fontIt)->font_info;
 
 			// If texture is next
 			if (static_cast<InfoBase>(spriteInfo) < static_cast<InfoBase>(fontInfo))
@@ -53,7 +53,7 @@ int Renderer::CopyToBuffer(SDL_Renderer* _renderer)
 		}
 		else
 		{
-			const FontInfo& fontInfo = font_handler_->GetTextRenderableAt(fontIt).lock()->font_info;
+			const FontInfo& fontInfo = font_handler_->GetTextRenderableAt(fontIt)->font_info;
 			++fontIt;
 
 			success = CopyFontTexture(*_renderer, fontInfo);

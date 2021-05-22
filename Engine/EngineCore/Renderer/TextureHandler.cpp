@@ -75,7 +75,7 @@ bool TextureHandler::RegisterRenderable(std::shared_ptr<Sprite> _renderable, SDL
 	LoadTexture(_renderable->sprite_info.image_name, _renderer);
 
 	// Add the renderable to our container
-	renderables_.push_back(_renderable);
+	texture_info_handler_->AddTexture(_renderable);
 
 	// Messed up the pool a little so sort it next time we render
 	is_info_sorted_by_z_ = false;
@@ -104,11 +104,9 @@ void TextureHandler::RemoveTexture(const std::string& _name)
 
 bool TextureHandler::RemoveRenderable(std::shared_ptr<Sprite> _renderable)
 {
-	if (const auto resultIt = std::ranges::find(renderables_.cbegin(), renderables_.cend(), _renderable);
-		resultIt != renderables_.cend())
+	if (texture_info_handler_->RemoveTexture(_renderable))
 	{
-		RemoveTexture((*resultIt)->sprite_info.image_name);
-		renderables_.erase(resultIt);
+		RemoveTexture(_renderable->sprite_info.image_name);
 	}
 	else
 	{
@@ -124,21 +122,19 @@ void TextureHandler::SortPoolByZ()
 	// Sort the elements by Z value
 	if (!is_info_sorted_by_z_)
 	{
-		std::sort(renderables_.begin(),
-			renderables_.end()
-		);
+		texture_info_handler_->SortTextures();
 		is_info_sorted_by_z_ = true;
 	}
 }
 
 size_t TextureHandler::GetPoolAmount() const
 {
-	return renderables_.size();
+	return texture_info_handler_->GetTextureAmount();
 }
 
 std::shared_ptr<Sprite> TextureHandler::GetSpriteAt(unsigned int _position)
 {
-	return renderables_.at(_position);
+	return texture_info_handler_->GetTexture(_position);
 }
 
 void TextureHandler::OnNotify(SpriteInfo _info, const Event _event)
