@@ -3,6 +3,10 @@
 #
 cmake_minimum_required (VERSION 3.19)
 
+# Clang tidy - all the checks! (second thoughts - too many checks and clutters the output log... a little too much)
+# Look at CMakeSettings.json, edit it and enableClangTidyCodeAnalysis etc.
+# set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
+
 project ("2DGame" LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)

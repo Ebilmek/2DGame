@@ -1,5 +1,6 @@
 #include "TextureHandler.h"
 
+#include <algorithm>
 #include <functional>
 
 #include "SDL_image.h"
@@ -23,29 +24,12 @@ TextureHandler::TextureHandler()
 	
 	file_path_ = sdlPtr;
 	SDL_free(sdlPtr);
-
-	// True Text Format initialise
-	if(!TTF_WasInit())
-	{
-		if(TTF_Init())
-		{
-			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_ttf could not be initialised: %s", TTF_GetError());
-		}
-	}
 }
 
 TextureHandler::~TextureHandler()
 {
-	// Make sure the pointers are deleted before cleanup
-	for(auto& texture : texture_pool_)
-	{
-		delete texture.second;
-	}
-
 	// TODO: Make this multiple screen friendly, Quit these on application shutdown
 	IMG_Quit();
-	// TODO: Remove this when font handler is created
-	TTF_Quit();
 }
 
 void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& _renderer)
@@ -54,7 +38,7 @@ void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& _rendere
 	if (const auto textureIt = texture_pool_.find(name); textureIt != texture_pool_.end())
 	{
 		// Add one onto the ref count
-		++textureIt->second->ref_count;
+		++textureIt->second.ref_count;
 	}
 	else
 	{
@@ -77,8 +61,7 @@ void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& _rendere
 			return;
 		}
 
-		auto image = new ImageContainer(texture, 1);
-		texture_pool_.insert(std::make_pair(name, image));
+		texture_pool_.insert(std::make_pair(name, ImageContainer(texture)));
 		
 		// Free up surface;
 		SDL_FreeSurface(loadSurface);
@@ -86,10 +69,23 @@ void TextureHandler::LoadTexture(const std::string& name, SDL_Renderer& _rendere
 	}
 }
 
+bool TextureHandler::RegisterRenderable(std::shared_ptr<Sprite> _renderable, SDL_Renderer& _renderer)
+{
+	// Send to the texture handler to load this texture
+	LoadTexture(_renderable->sprite_info.image_name, _renderer);
+
+	// Add the renderable to our container
+	renderables_.push_back(_renderable);
+
+	// Messed up the pool a little so sort it next time we render
+	is_info_sorted_by_z_ = false;
+
+	return false;
+}
+
 void TextureHandler::AddTexture(const std::string& _name, SDL_Texture& _texture)
 {
-	auto* image = new ImageContainer(&_texture, 1);
-	texture_pool_.insert(std::make_pair(_name, image));
+	texture_pool_.insert(std::make_pair(_name, ImageContainer(&_texture)));
 }
 
 void TextureHandler::RemoveTexture(const std::string& _name)
@@ -98,16 +94,70 @@ void TextureHandler::RemoveTexture(const std::string& _name)
 		texture != texture_pool_.end())
 	{
 		// If ref count hits 0, remove the texture from the container
-		--texture->second->ref_count;
+		--texture->second.ref_count;
 
-		if (texture->second->ref_count <= 0)
+		if (texture->second.ref_count <= 0)
 		{
-			delete texture->second;
 			texture_pool_.erase(texture);
 		}
 	}
 	else
 	{
 		SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Trying to remove texture not currently in texture pool: %s", _name.c_str());
+	}
+}
+
+bool TextureHandler::RemoveRenderable(std::shared_ptr<Sprite> _renderable)
+{
+	if (const auto resultIt = std::ranges::find(renderables_.cbegin(), renderables_.cend(), _renderable);
+		resultIt != renderables_.cend())
+	{
+		RemoveTexture((*resultIt)->sprite_info.image_name);
+		renderables_.erase(resultIt);
+	}
+	else
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Renderable passed in to RemoveRenderable was not found in the container");
+		return true;
+	}
+
+	return false;
+}
+
+void TextureHandler::SortPoolByZ()
+{
+	// Sort the elements by Z value
+	if (!is_info_sorted_by_z_)
+	{
+		std::sort(renderables_.begin(),
+			renderables_.end()
+		);
+		is_info_sorted_by_z_ = true;
+	}
+}
+
+size_t TextureHandler::GetPoolAmount() const
+{
+	return renderables_.size();
+}
+
+std::shared_ptr<Sprite> TextureHandler::GetSpriteAt(unsigned int _position)
+{
+	return renderables_.at(_position);
+}
+
+void TextureHandler::OnNotify(SpriteInfo _info, const Event _event)
+{
+	switch (_event)
+	{
+	case Event::kAddTexture:
+		break;
+	case Event::kRemoveTexture:
+		//RemoveTexture();
+		break;
+	case Event::kUpdateTexture:
+		break;
+	default:
+		break;
 	}
 }

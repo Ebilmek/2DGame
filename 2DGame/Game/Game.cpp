@@ -4,19 +4,15 @@
 
 #include "SDL_rect.h"
 #include "EventFacade.h"
+#include "RenderableFactory.h"
 
 Game::Game() : window_ptr_(new WindowSDL()),
                transform_(SDL_FRect({100.f, 100.f, 64.f, 64.f})),
-               sprite1_(std::make_shared<Sprite>(std::string(R"(Assets\Images\ball.jpg)"))),
-               sprite2_(std::make_shared<Sprite>(std::string(R"(Assets\Images\ball.jpg)"))),
-               sprite3_(std::make_shared<Sprite>(std::string(R"(Assets\Images\gear.png)"))),
                time_since_start_(0.0f),
-               font_(new Font(std::string(R"(Assets\Fonts\agane\Agane 55 (roman).ttf)"))),
-               text_(std::make_shared<TextRenderable>(SpriteInfo("")))
+               font_(new Font(std::string(R"(Assets\Fonts\agane\Agane 55 (roman).ttf)")))
+               //text_(std::make_shared<TextRenderable>(SpriteInfo("")))
 {
 	//windowPtr = std::make_unique<WindowSDL>();
-	sprite2_->sprite_info.transform.Translate(150.0f, 0.0f);
-	sprite3_->sprite_info.transform.Translate(300.0f, 0.0f);
 }
 
 bool Game::StartGame()
@@ -24,14 +20,19 @@ bool Game::StartGame()
 	window_ptr_->CreateWindow();
 	window_ptr_->DisplayWindow();
 
-	const auto shRenderer = window_ptr_->GetRenderer();
-	renderer_.RegisterRenderable(*sprite1_, *shRenderer);
-	renderer_.RegisterRenderable(*sprite2_, *shRenderer);
-	renderer_.RegisterRenderable(*sprite3_, *shRenderer);
+	const auto& shRenderer = window_ptr_->GetRenderer();
+	const SpriteInfo ballInfo(std::string(R"(Assets\Images\ball.jpg)"));
+	const SpriteInfo gearInfo(std::string(R"(Assets\Images\gear.png)"));
+	sprite1_ = RenderableFactory::RegisterSprite(ballInfo, *shRenderer, renderer_);
+	sprite2_ = RenderableFactory::RegisterSprite(ballInfo, *shRenderer, renderer_);
+	sprite3_ = RenderableFactory::RegisterSprite(gearInfo, *shRenderer, renderer_);
 
-	text_->sprite_info.transform.Translate(100.0f, 500.0f);
-	text_->sprite_info.z_value = 100.0f;
-	renderer_.RegisterRenderable(*text_, *shRenderer, "Hi there!", font_);
+	sprite2_->sprite_info.transform.Translate(150.0f, 0.0f);
+	sprite3_->sprite_info.transform.Translate(300.0f, 0.0f);
+
+	//text_->sprite_info.transform.Translate(100.0f, 500.0f);
+	//text_->sprite_info.z_value = 100.0f;
+	//renderer_.RegisterRenderable(*text_, *shRenderer, "Hi there!", font_);
 
 	// Initialize input
 	const auto [width, height] = window_ptr_->GetWindowSize();
@@ -47,7 +48,7 @@ bool Game::StopGame()
 	renderer_.RemoveRenderable(sprite1_);
 	renderer_.RemoveRenderable(sprite2_);
 	renderer_.RemoveRenderable(sprite3_);
-	renderer_.RemoveRenderable(text_);
+	//renderer_.RemoveRenderable(text_);
 	
 	return false;
 }
@@ -121,7 +122,7 @@ bool Game::Render(const float& _dt)
 
 	SDL_RenderClear(shRenderer);
 
-	renderer_.CopyToBuffer(*shRenderer);
+	renderer_.CopyToBuffer(shRenderer);
 	
 	SDL_RenderPresent(shRenderer);
 	SDL_SetRenderDrawColor(shRenderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);

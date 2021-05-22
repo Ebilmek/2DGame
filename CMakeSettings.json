@@ -7,7 +7,11 @@
             "inheritEnvironments": [ "msvc_x64_x64" ],
             "buildRoot": "${projectDir}\\out\\build\\${name}",
             "installRoot": "${projectDir}\\out\\install\\${name}",
-            "ctestCommandArgs": ""
+            "ctestCommandArgs": "",
+            "cmakeCommandArgs": "-Wno-dev",
+            "enableClangTidyCodeAnalysis": true,
+            "enableMicrosoftCodeAnalysis": true,
+            "clangTidyChecks": "bugprone-*, clang-analyzer-*, concurrency-*, cppcoreguidelines-*, modernize-*,  performance-*"
         }
     ]
 }

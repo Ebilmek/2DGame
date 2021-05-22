@@ -30,9 +30,14 @@ struct InfoBase
 		delete centre_of_rotation;
 	}
 
+	bool operator<(const InfoBase& _rhs) { return layer == _rhs.layer ? z_value < _rhs.z_value : layer < _rhs.layer; }
+	bool operator>(const InfoBase& _rhs) { return layer == _rhs.layer ? z_value > _rhs.z_value : layer > _rhs.layer; }
+
 	RenderLayer layer;
 	Transform2D transform;
 	SDL_Rect* src_rect = nullptr;
 	float z_value = 0; // Could be some weight or some calculated value, but not really necessary in this project so just an arbitrary float value.
 	SDL_FPoint* centre_of_rotation = nullptr;
 };
+
+// TODO: Comparison operator for z_value and layer

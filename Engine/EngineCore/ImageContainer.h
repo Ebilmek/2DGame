@@ -9,15 +9,18 @@
 
 struct ImageContainer
 {
-	ImageContainer(SDL_Texture* _image, const int _ref_count = 0)
+	ImageContainer() = default;
+	explicit ImageContainer(SDL_Texture* _image, const int _ref_count = 1)
 		: image(_image),
 		  ref_count(_ref_count)
 	{
 	}
 	~ImageContainer()
 	{
-		SDL_free(image);
-		image = nullptr;
+		if(ref_count <= 0)
+		{
+			SDL_free(image);
+		}
 	}
 
 	SDL_Texture* image;

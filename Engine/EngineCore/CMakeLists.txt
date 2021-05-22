@@ -21,7 +21,8 @@ target_sources (EngineCore PRIVATE
     "Font.h" 
     "AnimatedSprite.h" "AnimatedSprite.cpp" 
     "EventFacade.h" "EventFacade.cpp" 
-    "FontHandler.h" "FontHandler.cpp")
+    "FontHandler.h" "FontHandler.cpp" 
+    "Events/ObserverFont.h" "Events/SubjectFont.cpp")
 
 add_subdirectory("Events")
 add_subdirectory("RenderableInfo")
@@ -61,8 +62,8 @@ endforeach()
 
 # SDL_ttf
 # Loops through the missing DLLs and moves each one that's missing from destination .exe folder
-file(GLOB IMAGE_DLLS ${SDL2_TTF_PATH}/lib/${Processor}/*.dll)
-foreach(CurrentDLL IN LISTS IMAGE_DLLS)
+file(GLOB TTF_DLL ${SDL2_TTF_PATH}/lib/${Processor}/*.dll)
+foreach(CurrentDLL IN LISTS TTF_DLL)
     add_custom_command(
         TARGET EngineCore POST_BUILD 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CurrentDLL} $<TARGET_FILE_DIR:2DGame>

@@ -4,14 +4,18 @@
 #include "Renderable.h"
 #include "SDL.h"
 #include "SpriteInfo.h"
+#include "SubjectSprite.h"
 
 
-class Sprite : public Renderable
+class Sprite : public Renderable, public SubjectSprite
 {
 public:
-	explicit Sprite(const SpriteInfo& _info) : Renderable(_info)
+	Sprite(const SpriteInfo& _info) : sprite_info(_info)
 	{
 	}
+	virtual ~Sprite() = default;
+
+	SpriteInfo sprite_info;
 
 	// TODO: Add SDL_SetColorKey support?
 	// Blend mode etc.

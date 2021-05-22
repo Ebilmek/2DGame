@@ -3,7 +3,9 @@
 #include <unordered_map>
 
 #include "ImageContainer.h"
+#include "ObserverSprite.h"
 #include "SDL_render.h"
+#include "Sprite.h"
 
 
 /*
@@ -16,7 +18,7 @@
  *	- Render/Copy to buffer function - Sort the 
  */
 
-class TextureHandler
+class TextureHandler : public ObserverSprite
 {
 public:
 	TextureHandler();
@@ -24,11 +26,17 @@ public:
 
 	// Load texture if not present, otherwise add one to the ref count
 	void LoadTexture(const std::string& _name, SDL_Renderer& _renderer);
+	bool RegisterRenderable(std::shared_ptr<Sprite> _renderable, SDL_Renderer& _renderer);
 
 	void AddTexture(const std::string& _name, SDL_Texture& _texture);
 
 	// Remove one from the ref count, if 0 delete the texture.
 	void RemoveTexture(const std::string& _name);
+	bool RemoveRenderable(std::shared_ptr<Sprite> _renderable);
+
+	void SortPoolByZ();
+	size_t GetPoolAmount() const;
+	std::shared_ptr<Sprite> GetSpriteAt(unsigned int _position);
 
 	/**
 	 * \brief Get a pointer to the loaded texture within the container
@@ -44,13 +52,20 @@ public:
 	 */
 	size_t GetTextureAmount() const { return texture_pool_.size(); }
 
+	// Inherited via Observer
+	virtual void OnNotify(SpriteInfo _info, Event _event) override;
+
 private:
-	std::unordered_map<std::string, ImageContainer*> texture_pool_;
+	std::vector<std::shared_ptr<Sprite>> renderables_;
+
+	bool is_info_sorted_by_z_ = true;
+
+	std::unordered_map<std::string, ImageContainer> texture_pool_;
 
 	std::string file_path_;
 };
 
 inline SDL_Texture* TextureHandler::GetTexture(const std::string& _name)
 {
-	return texture_pool_[_name]->image;
+	return texture_pool_[_name].image;
 }
