@@ -7,10 +7,8 @@
 #include "RenderableFactory.h"
 
 Game::Game() : window_ptr_(new WindowSDL()),
-               transform_(SDL_FRect({100.f, 100.f, 64.f, 64.f})),
-               time_since_start_(0.0f),
-               font_(new Font(std::string(R"(Assets\Fonts\agane\Agane 55 (roman).ttf)")))
-               //text_(std::make_shared<TextRenderable>(SpriteInfo("")))
+               transform_(SDL_FRect(100.f, 100.f, 64.f, 64.f)),
+               time_since_start_(0.0f)
 {
 	//windowPtr = std::make_unique<WindowSDL>();
 }
@@ -30,9 +28,15 @@ bool Game::StartGame()
 	sprite2_->sprite_info.transform.Translate(150.0f, 0.0f);
 	sprite3_->sprite_info.transform.Translate(300.0f, 0.0f);
 
-	//text_->sprite_info.transform.Translate(100.0f, 500.0f);
-	//text_->sprite_info.z_value = 100.0f;
-	//renderer_.RegisterRenderable(*text_, *shRenderer, "Hi there!", font_);
+	FontInfo fontInfo(Transform2D(SDL_FRect(0.0f, 0.0f, 0.0f, 0.0f)), "Hello World!", std::string(R"(Assets\Fonts\agane\Agane 55 (roman).ttf)"), 24);
+	fontInfo.transform.Translate(100.0f, 500.0f);
+	text1_ = RenderableFactory::RegisterFontText(fontInfo, *shRenderer, renderer_);
+	fontInfo.text = "Sexy Time!";
+	fontInfo.transform.Translate(0.0f, 25.0f);
+	text2_ = RenderableFactory::RegisterFontText(fontInfo, *shRenderer, renderer_);
+	fontInfo.text = "Testing!";
+	fontInfo.transform.Translate(0.0f, 25.0f);
+	text3_ = RenderableFactory::RegisterFontText(fontInfo, *shRenderer, renderer_);
 
 	// Initialize input
 	const auto [width, height] = window_ptr_->GetWindowSize();
@@ -45,10 +49,13 @@ bool Game::StartGame()
 
 bool Game::StopGame()
 {
-	renderer_.RemoveRenderable(sprite1_);
-	renderer_.RemoveRenderable(sprite2_);
-	renderer_.RemoveRenderable(sprite3_);
-	//renderer_.RemoveRenderable(text_);
+	RenderableFactory::DeregisterSprite(sprite1_, renderer_);
+	RenderableFactory::DeregisterSprite(sprite2_, renderer_);
+	RenderableFactory::DeregisterSprite(sprite3_, renderer_);
+	
+	RenderableFactory::DeregisterFontText(text1_, renderer_);
+	RenderableFactory::DeregisterFontText(text2_, renderer_);
+	RenderableFactory::DeregisterFontText(text3_, renderer_);
 	
 	return false;
 }

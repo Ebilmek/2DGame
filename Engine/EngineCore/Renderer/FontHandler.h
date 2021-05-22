@@ -7,7 +7,6 @@
 #include "ImageContainer.h"
 #include "ObserverFont.h"
 #include "TextRenderable.h"
-#include "Font.h"
 
 class FontHandler : public ObserverFont
 {
@@ -17,7 +16,7 @@ public:
 
 	void AddText(const std::string& _name, SDL_Texture& _texture);
 	void UpdateText();
-	void RemoveText();
+	void RemoveText(const std::string& _name);
 
 	void AddFont();
 	void CreateTextFromFont();
@@ -35,6 +34,8 @@ public:
 	// Inherited via Observer
 	virtual void OnNotify(FontInfo _info, Event _event) override;
 private:
+	SDL_Texture* CreateFontTexture(FontInfo& _font_info, TTF_Font* _font, SDL_Renderer* _renderer);
+	
 	std::vector<std::shared_ptr<const TextRenderable>> renderables_;
 
 	bool is_info_sorted_by_z_ = true;

@@ -83,11 +83,6 @@ bool TextureHandler::RegisterRenderable(std::shared_ptr<Sprite> _renderable, SDL
 	return false;
 }
 
-void TextureHandler::AddTexture(const std::string& _name, SDL_Texture& _texture)
-{
-	texture_pool_.insert(std::make_pair(_name, ImageContainer(&_texture)));
-}
-
 void TextureHandler::RemoveTexture(const std::string& _name)
 {
 	if (auto texture = texture_pool_.find(_name); 

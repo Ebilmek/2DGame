@@ -12,13 +12,13 @@
 struct InfoBase
 {
 	explicit InfoBase(const Transform2D& _transform = Transform2D(SDL_FRect({ 0.0f, 0.0f, 100.0f, 100.0f }), 0.0, SDL_FLIP_NONE),
-	                  const RenderLayer _layer = RenderLayer::kMiddleground,
+	                  const RenderLayer _layer = kMiddleground,
 	                  const float& _z_value = 0.0f,
 	                  SDL_Rect* _src_rect = nullptr,
 	                  SDL_FPoint* _centre_of_rotation = nullptr) :
+		layer(_layer),
 		transform(_transform),
 		src_rect(_src_rect),
-		layer(_layer),
 		z_value(_z_value),
 		centre_of_rotation(_centre_of_rotation)
 	{
@@ -30,8 +30,8 @@ struct InfoBase
 		delete centre_of_rotation;
 	}
 
-	bool operator<(const InfoBase& _rhs) { return layer == _rhs.layer ? z_value < _rhs.z_value : layer < _rhs.layer; }
-	bool operator>(const InfoBase& _rhs) { return layer == _rhs.layer ? z_value > _rhs.z_value : layer > _rhs.layer; }
+	bool operator<(const InfoBase& _rhs) const { return layer == _rhs.layer ? z_value < _rhs.z_value : layer < _rhs.layer; }
+	bool operator>(const InfoBase& _rhs) const { return layer == _rhs.layer ? z_value > _rhs.z_value : layer > _rhs.layer; }
 
 	RenderLayer layer;
 	Transform2D transform;

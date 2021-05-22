@@ -35,7 +35,6 @@ namespace RenderableFactory
 
 	bool DeregisterFontText(std::shared_ptr<TextRenderable> _text, Renderer& _renderer)
 	{
-		// TODO: Create deregister
-		return false;
+		return _renderer.RemoveRenderable(_text);
 	}
 }

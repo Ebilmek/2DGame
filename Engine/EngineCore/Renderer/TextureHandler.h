@@ -28,8 +28,6 @@ public:
 	void LoadTexture(const std::string& _name, SDL_Renderer& _renderer);
 	bool RegisterRenderable(std::shared_ptr<Sprite> _renderable, SDL_Renderer& _renderer);
 
-	void AddTexture(const std::string& _name, SDL_Texture& _texture);
-
 	// Remove one from the ref count, if 0 delete the texture.
 	void RemoveTexture(const std::string& _name);
 	bool RemoveRenderable(std::shared_ptr<Sprite> _renderable);

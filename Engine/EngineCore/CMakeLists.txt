@@ -11,21 +11,13 @@ target_compile_features(EngineCore PRIVATE cxx_std_20)
 target_sources (EngineCore PRIVATE 
     "SHDebug.cpp" "SHDebug.h"
     "Input.cpp" "Input.h"
-    "WindowSDL.cpp" "WindowSDL.h" 
-    "Sprite.h" "Sprite.cpp" 
-    "TextureHandler.h" "TextureHandler.cpp" 
-    "Renderer.h" "Renderer.cpp" 
-    "ImageContainer.h" 
-    "Renderable.h" 
-    "TextRenderable.h" 
-    "Font.h" 
-    "AnimatedSprite.h" "AnimatedSprite.cpp" 
-    "EventFacade.h" "EventFacade.cpp" 
-    "FontHandler.h" "FontHandler.cpp" 
-    "Events/ObserverFont.h" "Events/SubjectFont.cpp")
+    "WindowSDL.cpp" "WindowSDL.h"
+    "EventFacade.h" "EventFacade.cpp")
 
 add_subdirectory("Events")
 add_subdirectory("RenderableInfo")
+add_subdirectory("Renderables")
+add_subdirectory("Renderer")
 
 # Personal note: Looks at size of a pointer on current system
 # Looked into other means of doing this but most have been deprecated

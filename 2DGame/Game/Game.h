@@ -30,6 +30,7 @@ private:
 	std::shared_ptr<Sprite> sprite3_;
 	float time_since_start_;
 
-	Font* font_;
-	std::shared_ptr<TextRenderable> text_;
+	std::shared_ptr<TextRenderable> text1_;
+	std::shared_ptr<TextRenderable> text2_;
+	std::shared_ptr<TextRenderable> text3_;
 };
