@@ -20,7 +20,9 @@ bool TextureInfoHandler::RemoveTexture(std::shared_ptr<Sprite> _sprite)
 
 std::shared_ptr<Sprite> TextureInfoHandler::GetTexture(unsigned int _position)
 {
-	return renderables_.at(_position);
+	if (_position < renderables_.size())
+		return renderables_.at(_position);
+	return std::shared_ptr<Sprite>();
 }
 
 size_t TextureInfoHandler::GetTextureAmount() const

@@ -26,33 +26,48 @@ public:
 	~TextureHandler();
 
 	// Load texture if not present, otherwise add one to the ref count
-	void LoadTexture(const std::string& _name, SDL_Renderer& _renderer);
 	bool RegisterRenderable(std::shared_ptr<Sprite> _renderable, SDL_Renderer& _renderer);
 
 	// Remove one from the ref count, if 0 delete the texture.
-	void RemoveTexture(const std::string& _name);
 	bool RemoveRenderable(std::shared_ptr<Sprite> _renderable);
 
+	/**
+	 * \brief Sort the information by layer and z-value
+	 */
 	void SortPoolByZ();
+	
+	/**
+	 * \brief Get amount of Sprite information stored
+	 * \return Amount of Sprite information
+	 */
 	size_t GetPoolAmount() const;
+	
+	/**
+	 * \brief Get Sprite information held at the stated position 
+	 * \param _position Position in the container
+	 * \return Sprite information
+	 */
 	std::shared_ptr<Sprite> GetSpriteAt(unsigned int _position);
 
 	/**
 	 * \brief Get a pointer to the loaded texture within the container
-	 *
 	 * \param _name Must be the shortened version of the filepath from executable to file. Full file path must not be included.
 	 */
 	SDL_Texture* GetTexture(const std::string& _name);
 
 	/**
 	 * \brief Get the amount of buckets in the container (unique textures)
-	 *
 	 * \return Amount of unique textures
 	 */
 	size_t GetTextureAmount() const { return texture_pool_.size(); }
 
 	// Inherited via Observer
-	virtual void OnNotify(SpriteInfo _info, Event _event) override;
+	void OnNotify(SpriteInfo _info, Event _event) override;
+
+private:
+	void LoadTexture(const std::string& _name, SDL_Renderer& _renderer);
+
+	void RemoveTexture(const std::string& _name);
 
 private:
 	bool is_info_sorted_by_z_ = true;

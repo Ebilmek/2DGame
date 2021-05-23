@@ -6,9 +6,9 @@
 
 namespace RenderableFactory
 {
-	std::shared_ptr<Sprite> RegisterSprite(const SpriteInfo& _sprite_info, SDL_Renderer& _renderer_sdl, Renderer& _renderer)
+	inline std::shared_ptr<Sprite> RegisterSprite(const SpriteInfo& _sprite_info, SDL_Renderer& _renderer_sdl, Renderer& _renderer)
 	{
-		std::shared_ptr<Sprite> renderable = std::make_shared<Sprite>(_sprite_info);
+		auto renderable = std::make_shared<Sprite>(_sprite_info);
 
 		renderable->AddObserver(_renderer.GetTextureObserver());
 
@@ -17,9 +17,9 @@ namespace RenderableFactory
 		return renderable;
 	}
 
-	std::shared_ptr<TextRenderable> RegisterFontText(const FontInfo& _font_info, SDL_Renderer& _renderer_sdl, Renderer& _renderer)
+	inline std::shared_ptr<TextRenderable> RegisterFontText(const FontInfo& _font_info, SDL_Renderer& _renderer_sdl, Renderer& _renderer)
 	{
-		std::shared_ptr<TextRenderable> renderable = std::make_shared<TextRenderable>(_font_info);
+		auto renderable = std::make_shared<TextRenderable>(_font_info);
 
 		renderable->AddObserver(_renderer.GetFontObserver());
 
@@ -28,13 +28,13 @@ namespace RenderableFactory
 		return renderable;
 	}
 
-	bool DeregisterSprite(std::shared_ptr<Sprite> _sprite, Renderer& _renderer)
+	inline bool DeregisterSprite(std::shared_ptr<Sprite> _sprite, Renderer& _renderer)
 	{
-		return _renderer.RemoveRenderable(_sprite);
+		return _renderer.RemoveRenderable(std::move(_sprite));
 	}
 
-	bool DeregisterFontText(std::shared_ptr<TextRenderable> _text, Renderer& _renderer)
+	inline bool DeregisterFontText(std::shared_ptr<TextRenderable> _text, Renderer& _renderer)
 	{
-		return _renderer.RemoveRenderable(_text);
+		return _renderer.RemoveRenderable(std::move(_text));
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "Sprite.h"
+#include "StateHandler.h"
 #include "WindowSDL.h"
 #include "Transform2D.h"
 
@@ -21,6 +22,8 @@ public:
 
 private:
 	std::unique_ptr<WindowSDL> window_ptr_;
+
+	std::unique_ptr<StateHandler> state_handler_ = std::make_unique<StateHandler>();
 
 	Renderer renderer_;
 	
