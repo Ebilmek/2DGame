@@ -2,8 +2,8 @@
 #include "Renderer.h"
 #include "Sprite.h"
 #include "StateHandler.h"
-#include "WindowSDL.h"
 #include "Transform2D.h"
+#include "WindowSDL.h"
 
 class Game
 {

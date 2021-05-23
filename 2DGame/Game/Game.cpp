@@ -10,7 +10,6 @@ Game::Game() : window_ptr_(new WindowSDL()),
                transform_(SDL_FRect(100.f, 100.f, 64.f, 64.f)),
                time_since_start_(0.0f)
 {
-	//windowPtr = std::make_unique<WindowSDL>();
 }
 
 bool Game::StartGame()

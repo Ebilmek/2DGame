@@ -5,8 +5,6 @@
 class MainMenuState final : public StateBase
 {
 public:
-	MainMenuState();
-	
 	void OnEnter() override;
 	void OnExit() override;
 	GameStateEnum Update(const float& _dt) override;
