@@ -9,7 +9,7 @@ add_executable (2DGame WIN32)
 # Propagates this upwards to encompass the project
 target_compile_features(2DGame PUBLIC cxx_std_20)
 
-target_sources (2DGame PRIVATE "2DGame.cpp" "2DGame.h")
+target_sources (2DGame PRIVATE "2DGame.cpp" "2DGame.h" "Game/Buttons/Button.h" "Game/Buttons/Button.cpp")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_ttf REQUIRED)

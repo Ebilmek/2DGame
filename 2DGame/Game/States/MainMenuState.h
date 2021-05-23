@@ -1,14 +1,16 @@
 #pragma once
 #include "Sprite.h"
 #include "StateBase.h"
+#include "TextRenderable.h"
 
 class MainMenuState final : public StateBase
 {
 public:
-	void OnEnter() override;
-	void OnExit() override;
 	GameStateEnum Update(const float& _dt) override;
 
+	void OnEnter() override;
+	void OnExit() override;
 private:
-	Sprite* background_;
+	std::shared_ptr<Sprite> background_;
+	std::shared_ptr<TextRenderable> title_;
 };

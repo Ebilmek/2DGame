@@ -3,38 +3,43 @@
 #include "Sprite.h"
 #include "TextRenderable.h"
 #include "Renderer.h"
+#include "RendererFacade.h"
 
 namespace RenderableFactory
 {
-	inline std::shared_ptr<Sprite> RegisterSprite(const SpriteInfo& _sprite_info, SDL_Renderer& _renderer_sdl, Renderer& _renderer)
+	inline std::shared_ptr<Sprite> RegisterSprite(const SpriteInfo& _sprite_info)
 	{
 		auto renderable = std::make_shared<Sprite>(_sprite_info);
+		auto* renderer = RendererFacade::GetInstance().GetRenderer();
+		auto* sdlRenderer = RendererFacade::GetInstance().GetSDLRenderer();
 
-		renderable->AddObserver(_renderer.GetTextureObserver());
+		renderable->AddObserver(renderer->GetTextureObserver());
 
-		_renderer.RegisterRenderable(renderable, _renderer_sdl);
+		renderer->RegisterRenderable(renderable, *sdlRenderer);
 
 		return renderable;
 	}
 
-	inline std::shared_ptr<TextRenderable> RegisterFontText(const FontInfo& _font_info, SDL_Renderer& _renderer_sdl, Renderer& _renderer)
+	inline std::shared_ptr<TextRenderable> RegisterFontText(const FontInfo& _font_info)
 	{
 		auto renderable = std::make_shared<TextRenderable>(_font_info);
+		auto* renderer = RendererFacade::GetInstance().GetRenderer();
+		auto* sdlRenderer = RendererFacade::GetInstance().GetSDLRenderer();
 
-		renderable->AddObserver(_renderer.GetFontObserver());
+		renderable->AddObserver(renderer->GetFontObserver());
 
-		_renderer.RegisterRenderable(renderable, _renderer_sdl);
+		renderer->RegisterRenderable(renderable, *sdlRenderer);
 		
 		return renderable;
 	}
 
-	inline bool DeregisterSprite(std::shared_ptr<Sprite> _sprite, Renderer& _renderer)
+	inline bool DeregisterSprite(std::shared_ptr<Sprite> _sprite)
 	{
-		return _renderer.RemoveRenderable(std::move(_sprite));
+		return RendererFacade::GetInstance().GetRenderer()->RemoveRenderable(std::move(_sprite));
 	}
 
-	inline bool DeregisterFontText(std::shared_ptr<TextRenderable> _text, Renderer& _renderer)
+	inline bool DeregisterFontText(std::shared_ptr<TextRenderable> _text)
 	{
-		return _renderer.RemoveRenderable(std::move(_text));
+		return RendererFacade::GetInstance().GetRenderer()->RemoveRenderable(std::move(_text));
 	}
 }

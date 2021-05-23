@@ -29,7 +29,7 @@ int Renderer::CopyToBuffer(SDL_Renderer* _renderer)
 			const FontInfo& fontInfo = font_handler_->GetTextRenderableAt(fontIt)->font_info;
 
 			// If texture is next
-			if (static_cast<InfoBase>(spriteInfo) < static_cast<InfoBase>(fontInfo))
+			if(spriteInfo < fontInfo)
 			{
 				++textureIt;
 

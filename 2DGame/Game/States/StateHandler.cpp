@@ -2,7 +2,12 @@
 
 StateHandler::StateHandler()
 {
-	state_->OnEnter();
+	
+}
+
+StateHandler::~StateHandler()
+{
+	
 }
 
 void StateHandler::Update(const float _dt)
@@ -17,6 +22,11 @@ void StateHandler::Update(const float _dt)
 		state_->OnEnter();
 		previous_state_ = current_state_;
 	}
+}
+
+void StateHandler::Setup()
+{
+	state_->OnEnter();
 }
 
 void StateHandler::ChangeState()

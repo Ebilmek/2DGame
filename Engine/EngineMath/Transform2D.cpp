@@ -15,6 +15,12 @@ void Transform2D::Translate(float _x, float _y)
 	pos_and_size_.y += _y;
 }
 
+void Transform2D::SetLocation(float _x, float _y)
+{
+	pos_and_size_.x = _x;
+	pos_and_size_.y = _y;
+}
+
 void Transform2D::MultiplySize(float _multiplier_x, float _multiplier_y)
 {
 	if(_multiplier_x > 0)

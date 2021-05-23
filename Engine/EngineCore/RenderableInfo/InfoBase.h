@@ -30,7 +30,7 @@ struct InfoBase
 		delete centre_of_rotation;
 	}
 
-	bool operator<(const InfoBase& _rhs) const { return layer == _rhs.layer ? z_value < _rhs.z_value : layer < _rhs.layer; }
+	bool operator<(const InfoBase& _rhs) const { return layer != _rhs.layer ? layer < _rhs.layer : z_value < _rhs.z_value; }
 	bool operator>(const InfoBase& _rhs) const { return layer == _rhs.layer ? z_value > _rhs.z_value : layer > _rhs.layer; }
 
 	RenderLayer layer;

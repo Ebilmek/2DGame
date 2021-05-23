@@ -36,4 +36,11 @@ private:
 	std::shared_ptr<TextRenderable> text1_;
 	std::shared_ptr<TextRenderable> text2_;
 	std::shared_ptr<TextRenderable> text3_;
+
+	std::shared_ptr<Sprite> cursor1_;
+
+	std::shared_ptr<Sprite> image1_;
+	std::shared_ptr<Sprite> image2_;
+	std::shared_ptr<Sprite> image3_;
+	std::shared_ptr<Sprite> image4_;
 };

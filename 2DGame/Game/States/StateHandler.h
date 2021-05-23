@@ -8,8 +8,10 @@ class StateHandler
 {
 public:
 	StateHandler();
+	~StateHandler();
 
 	void Update(float _dt);
+	void Setup();
 private:
 	void ChangeState();
 	

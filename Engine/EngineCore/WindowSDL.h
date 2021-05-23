@@ -44,8 +44,8 @@ private:
 	SDL_Surface* screen_surface_ptr_ = nullptr;
 	SDL_Renderer* renderer_ptr_ = nullptr;
 
-	uint16_t window_width_ = 1024;
-	uint16_t window_height_ = 768;
+	uint16_t window_width_ = 1920;
+	uint16_t window_height_ = 1080;
 	std::string window_name_ = "2DGame";
 
 	bool DeleteWindow();

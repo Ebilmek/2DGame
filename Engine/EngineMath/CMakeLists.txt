@@ -3,6 +3,7 @@
 cmake_minimum_required (VERSION 3.19)
 
 add_library(EngineMath STATIC)
+target_compile_features(EngineMath PRIVATE cxx_std_20)
 
 target_sources(EngineMath PRIVATE 
     "Transform2d.cpp" "Transform2d.h"

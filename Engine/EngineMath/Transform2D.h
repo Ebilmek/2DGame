@@ -28,6 +28,14 @@ public:
 	 */
 	void Translate(float _x, float _y);
 
+	
+	/**
+	 * \brief Set the position
+	 * \param _x X position, 0 being left
+	 * \param _y Y position, 0 being top
+	 */
+	void SetLocation(float _x, float _y);
+
 	/**
 	 *	\brief Getter for position and size SDL_FRect
 	 *

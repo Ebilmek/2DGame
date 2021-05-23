@@ -32,5 +32,9 @@ size_t FontInfoHandler::GetFontInfoAmount() const
 
 void FontInfoHandler::SortFontInfo()
 {
-	std::ranges::sort(renderables_);
+	auto pred = [](const std::shared_ptr<TextRenderable>& _a, const std::shared_ptr <TextRenderable>& _b)
+	{return _a->font_info.layer == _b->font_info.layer ?
+		_a->font_info.z_value < _b->font_info.z_value :
+		_a->font_info.layer < _b->font_info.layer; };
+	std::ranges::sort(renderables_, pred);
 }

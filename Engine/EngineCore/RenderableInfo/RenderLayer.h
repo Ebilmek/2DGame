@@ -2,7 +2,8 @@
 
 enum RenderLayer
 {
-	kBackground,	// Backdrops
-	kMiddleground,	// Game elements
-	kForeground		// UI elements
+	kBackground,		// Backdrops
+	kMiddleground,		// Game elements
+	kForeground,		// UI elements
+	kAboveEverything	// Cursors?
 };
