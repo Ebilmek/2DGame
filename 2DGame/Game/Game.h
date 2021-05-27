@@ -19,8 +19,9 @@ public:
 	bool Render(const float& _dt);
 
 	void OnWindowEvent(SDL_Event& _event);
-
 private:
+	void FpsCount(const float& _dt);
+	
 	std::unique_ptr<WindowSDL> window_ptr_;
 
 	std::unique_ptr<StateHandler> state_handler_ = std::make_unique<StateHandler>();
@@ -43,4 +44,9 @@ private:
 	std::shared_ptr<Sprite> image2_;
 	std::shared_ptr<Sprite> image3_;
 	std::shared_ptr<Sprite> image4_;
+
+	// Simple FPS counter for testing
+	std::shared_ptr<TextRenderable> fps_counter_text_;
+	float fps_counter_ = 0.0f;
+	int frame_count_ = 0;
 };

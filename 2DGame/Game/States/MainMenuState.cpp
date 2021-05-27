@@ -1,8 +1,17 @@
 #include "MainMenuState.h"
+
+#include "EventFacade.h"
 #include "RenderableFactory.h"
 
 GameStateEnum MainMenuState::Update(const float& _dt)
 {
+	Input* inputHandler = EventFacade::GetInstance().GetInput();
+
+	if (inputHandler->IsMouseButtonPressed(SDL_BUTTON_LEFT))
+	{
+		return GameStateEnum::kSettings;
+	}
+	
 	return GameStateEnum::kMainMenu;
 }
 

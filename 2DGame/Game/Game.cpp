@@ -44,6 +44,9 @@ bool Game::StartGame()
 	fontInfo.transform.Translate(0.0f, 25.0f);
 	text3_ = RenderableFactory::RegisterFontText(fontInfo);
 
+	fps_counter_text_ = RenderableFactory::RegisterFontText(fontInfo);
+	fps_counter_text_->font_info.transform.SetLocation(1700.0f, 1020.0f);
+
 	// Initialize input
 	const auto [width, height] = window_ptr_->GetWindowSize();
 	EventFacade::GetInstance().InitializeInput(width, height);
@@ -95,6 +98,8 @@ bool Game::StopGame()
 	RenderableFactory::DeregisterSprite(image2_);
 	RenderableFactory::DeregisterSprite(image3_);
 	RenderableFactory::DeregisterSprite(image4_);
+
+	RenderableFactory::DeregisterFontText(fps_counter_text_);
 	
 	return false;
 }
@@ -164,6 +169,9 @@ bool Game::RunGame(const float& _dt)
 	newLocation.first = std::clamp(newLocation.first, 0.0f, windowSize.first);
 	newLocation.second = std::clamp(newLocation.second, 0.0f, windowSize.second);
 	cursor1_->sprite_info.transform.SetLocation(newLocation.first, newLocation.second);
+
+	// Simple FPS Counter
+	FpsCount(_dt);
 	
 	inputHandler = nullptr;
 
@@ -203,5 +211,20 @@ void Game::OnWindowEvent(SDL_Event& _event)
 		break;
 	default:
 		break;
+	}
+}
+
+void Game::FpsCount(const float& _dt)
+{
+	++frame_count_;
+	if(_dt > 0.0f)
+	{
+		fps_counter_ += _dt;
+		if(const float fifthOfSecond = 1.0f / 5.0f; fps_counter_ > fifthOfSecond)
+		{
+			fps_counter_text_->UpdateText("FPS: " + std::to_string((fifthOfSecond / fps_counter_) * frame_count_));
+			fps_counter_ -= fifthOfSecond;
+			frame_count_ = 0;
+		}
 	}
 }

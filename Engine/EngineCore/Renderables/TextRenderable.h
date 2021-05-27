@@ -11,7 +11,9 @@ public:
 		font_info(_info)
 	{
 	}
-	virtual ~TextRenderable() = default;
+	~TextRenderable() override = default;
+
+	void UpdateText(const std::string& _text);
 
 	FontInfo font_info;
 

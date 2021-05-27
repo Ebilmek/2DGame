@@ -24,7 +24,6 @@ int Renderer::CopyToBuffer(SDL_Renderer* _renderer)
 	{
 		if ((textureAmount - textureIt > 0) && (fontAmount - fontIt > 0))
 		{
-			// TODO: Fix this comparison when font gets sorted.
 			const SpriteInfo& spriteInfo = texture_handler_->GetSpriteAt(textureIt)->sprite_info;
 			const FontInfo& fontInfo = font_handler_->GetTextRenderableAt(fontIt)->font_info;
 

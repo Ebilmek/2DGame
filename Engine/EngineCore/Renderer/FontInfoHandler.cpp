@@ -18,6 +18,19 @@ bool FontInfoHandler::RemoveFontInfo(const std::shared_ptr<TextRenderable> _text
 	return false;
 }
 
+std::shared_ptr<TextRenderable> FontInfoHandler::GetRenderableFromName(const std::string& _renderable_name)
+{
+	for(auto textRenderable : renderables_)
+	{
+		if(textRenderable->font_info.last_image_name == _renderable_name)
+		{
+			return textRenderable;
+		}
+	}
+	SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Failed to find %s while calling FontInfoHandler::GetRenderableFromName", _renderable_name.c_str());
+	return std::shared_ptr<TextRenderable>();
+}
+
 std::shared_ptr<TextRenderable> FontInfoHandler::GetFontInfo(unsigned _position)
 {
 	if (_position < renderables_.size())

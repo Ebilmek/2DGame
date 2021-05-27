@@ -3,7 +3,7 @@
 cmake_minimum_required (VERSION 3.19)
 
 target_sources (EngineCore PRIVATE "Renderable.h" 
-    "TextRenderable.h" 
+    "TextRenderable.h" "TextRenderable.cpp" 
     "AnimatedSprite.h" "AnimatedSprite.cpp" 
      "Sprite.h" "Sprite.cpp")
 

@@ -10,8 +10,8 @@ public:
 	Button(const SpriteInfo& _sprite_info, const FontInfo& _font_info);
 
 	bool IsWithinBounds(const std::pair<float, float>& _position) const;
-private:
 
+private:
 	
 	std::shared_ptr<Sprite> button_normal_;
 	std::shared_ptr<Sprite> button_hover_;

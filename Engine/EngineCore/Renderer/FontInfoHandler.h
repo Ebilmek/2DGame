@@ -1,6 +1,7 @@
 #pragma once
 #include "TextRenderable.h"
 
+
 class FontInfoHandler
 {
 public:
@@ -17,6 +18,12 @@ public:
 	 */
 	bool RemoveFontInfo(std::shared_ptr<TextRenderable> _text_renderable);
 
+	/**
+	 * \brief Returns variable containing _renderable_name
+	 * \param _renderable_name Name created by registering renderable (stored within FontInfo as name)
+	 * \return Shared pointer of renderable or blank one
+	 */
+	std::shared_ptr<TextRenderable> GetRenderableFromName(const std::string& _renderable_name);
 	
 	/**
 	 * \brief Gets requested information at stated position, safe

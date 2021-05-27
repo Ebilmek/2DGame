@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "RendererFacade.h"
+
 FontHandler::FontHandler()
 {
 	// True Text Format initialise
@@ -30,9 +32,42 @@ FontHandler::~FontHandler()
 	TTF_Quit();
 }
 
-void FontHandler::AddText(const std::string& _name, SDL_Texture& _texture)
+bool FontHandler::AddText(std::shared_ptr<TextRenderable> _renderable, SDL_Renderer& _renderer)
 {
-	text_image_container_.insert(std::make_pair(_name, ImageContainer(&_texture)));
+	auto* fontInfo = &_renderable->font_info;
+	TTF_Font* font = TTF_OpenFont((file_path_ + fontInfo->font_file).c_str(), fontInfo->font_size);
+
+	if (font == nullptr)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Font %s not loaded correctly", fontInfo->font_file.c_str());
+		return true;
+	}
+
+	auto* textTexture = CreateFontTexture(*fontInfo, font, &_renderer);
+
+	if (textTexture == nullptr)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "TextTexture %s not loaded correctly", fontInfo->text.c_str());
+		return true;
+	}
+
+	// Create a pseudo guid for the text (means that we could create the same text but prevents using the
+	// wrong image if we have different fonts for the same text)
+	static uint_fast32_t guidCount;
+
+	fontInfo->image_name = fontInfo->text + std::to_string(guidCount);
+	fontInfo->last_image_name = _renderable->font_info.image_name;
+	guidCount++;
+
+	int w = 0, h = 0;
+	TTF_SizeText(font, fontInfo->text.c_str(), &w, &h);
+	_renderable->font_info.transform.SetSize(w, h);
+
+	TTF_CloseFont(font);
+	font = nullptr;
+	text_image_container_.insert(std::make_pair(fontInfo->image_name, ImageContainer(textTexture)));
+
+	return false;
 }
 
 void FontHandler::RemoveText(const std::string& _name)
@@ -45,6 +80,8 @@ void FontHandler::RemoveText(const std::string& _name)
 
 		if (texture->second.ref_count <= 0)
 		{
+			SDL_DestroyTexture(texture->second.image);
+			texture->second.image = nullptr;
 			text_image_container_.erase(texture);
 		}
 	}
@@ -54,39 +91,23 @@ void FontHandler::RemoveText(const std::string& _name)
 	}
 }
 
+void FontHandler::UpdateText(const FontInfo& _font_info)
+{
+	RemoveText(_font_info.image_name);
+
+	const auto infoPtr = font_info_handler_->GetRenderableFromName(_font_info.image_name);
+	auto* renderer = RendererFacade::GetInstance().GetSDLRenderer();
+	
+	AddText(infoPtr, *renderer);
+}
+
 bool FontHandler::RegisterRenderable(std::shared_ptr<TextRenderable> _renderable, SDL_Renderer& _renderer)
 {
-	const SDL_Color color(0x00, 0x00, 0x00, 0xFF);
-
-	auto* fontInfo = &_renderable->font_info;
-	TTF_Font* font = TTF_OpenFont((file_path_ + fontInfo->font_file).c_str(), fontInfo->font_size);
-
-	if(font == nullptr)
+	if (AddText(_renderable, _renderer))
 	{
-		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Font %s not loaded correctly", fontInfo->font_file.c_str());
 		return true;
 	}
-
-	auto* textTexture = CreateFontTexture(*fontInfo, font, &_renderer);
-
-	if(textTexture == nullptr)
-	{
-		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "TextTexture %s not loaded correctly", fontInfo->text.c_str());
-		return true;
-	}
-
-	// Create a pseudo guid for the text (means that we could create the same text but prevents using the
-	// wrong image if we have different fonts for the same text)
-	static uint_fast32_t guidCount;
-
-	_renderable->font_info.image_name = fontInfo->text + std::to_string(guidCount);
-	guidCount++;
-
-	text_image_container_.insert(std::make_pair(fontInfo->image_name, ImageContainer(textTexture)));
 	
-	int w = 0, h = 0;
-	TTF_SizeText(font, fontInfo->text.c_str(), &w, &h);
-	_renderable->font_info.transform.SetSize(w, h);
 	font_info_handler_->AddFontInfo(_renderable);
 
 	//SDL_FreeSurface(surface);
@@ -145,6 +166,7 @@ void FontHandler::OnNotify(FontInfo _info, const Event _event)
 	case Event::kRemoveFont:
 		break;
 	case Event::kUpdateFont:
+		UpdateText(_info);
 		break;
 	default:
 		break;
@@ -180,7 +202,7 @@ SDL_Texture* FontHandler::CreateFontTexture(FontInfo& _font_info, TTF_Font* _fon
 	}
 
 	auto* texture = SDL_CreateTextureFromSurface(_renderer, surface);
-	SDL_free(surface);
+	SDL_FreeSurface(surface);
 
 	if (texture == nullptr)
 	{

@@ -57,4 +57,6 @@ struct FontInfo final : public InfoBase
 
 	// RenderType? Solid, Shaded, Blended, Wrap
 	RenderType render_type;
+
+	std::string last_image_name;
 };

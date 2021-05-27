@@ -17,7 +17,8 @@ Button::Button(const SpriteInfo& _sprite_info, const FontInfo& _font_info) :
 bool Button::IsWithinBounds(const std::pair<float, float>& _position) const
 {
 	const auto& info = button_info_.transform.GetLocationRect();
-	
-	return SHMath::InRange(info->x, info->x + info->w, _position.first) &&
-		SHMath::InRange(info->y, info->y + info->h, _position.second);
+
+	// Almost always going to be a smaller area vertically (don't have to carry out second check as often)
+	return SHMath::InRange(info->y, info->y + info->h, _position.second) && 
+		SHMath::InRange(info->x, info->x + info->w, _position.first);
 }

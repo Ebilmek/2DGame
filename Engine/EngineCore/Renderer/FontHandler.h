@@ -9,6 +9,7 @@
 #include "ObserverFont.h"
 #include "TextRenderable.h"
 
+// TODO: Replace current system of loading font for each text and store common ones, just unsure loading multiple of the same font with slightly different sizes
 class FontHandler : public ObserverFont
 {
 public:
@@ -60,11 +61,11 @@ public:
 private:
 	SDL_Texture* CreateFontTexture(FontInfo& _font_info, TTF_Font* _font, SDL_Renderer* _renderer);
 
-	void AddText(const std::string& _name, SDL_Texture& _texture);
+	bool AddText(std::shared_ptr<TextRenderable> _renderable, SDL_Renderer& _renderer);
 
 	void RemoveText(const std::string& _name);
 
-	void UpdateText();
+	void UpdateText(const FontInfo& _font_info);
 
 	bool is_info_sorted_by_z_ = true;
 

@@ -93,6 +93,8 @@ void TextureHandler::RemoveTexture(const std::string& _name)
 
 		if (texture->second.ref_count <= 0)
 		{
+			SDL_DestroyTexture(texture->second.image);
+			texture->second.image = nullptr;
 			texture_pool_.erase(texture);
 		}
 	}
