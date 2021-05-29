@@ -1,0 +1,46 @@
+Change Log
+v1.0 - Initial Plan (in before even looking at what SDL can do, so will change once ENGINECORE is being/is implemented)
+
+Target game: Some basic tower defence with decent pathfinding (recalculations on maze changes) menus 
+(some decent settings (screen resize, frame rate?, brightness? etc.)) 
+maybe some highscores (requires external file editing).
+
+File plan?
+2DGame(.c++, .h)
+/engineCore
+	2DWindow
+	Input (singleton?)
+	Timing (write wrapper for SDL? Look into SDL's version)
+	Image (Look into SDL's BMP usage)
+	Sound???
+	Events
+	Debug
+	HandlerHandler? - Static holder, singleton that holds instances for objects with multiple uses
+		Texture Handler - unordered_map, holds texture and hash is created from texture file name. Image location is stored in here (SDL_GetBasePath()) to reduce the issues with moving image folder
+			hash map to reduce multiple of the same texture being loaded
+		Input - I'm using this in multiple places. Mostly going to be a wrapper with some extra stuff (held buttons, possibly button chains?)
+/game
+	GameInstance	
+
+	stored enum for current state?
+		MainMenu
+		Settings - edits .config? needs to be able to restart window?
+		Highscore - display scores
+	
+	Game
+	
+	TowerBase
+		several towers extending from this base
+		
+	Sprite - ability to animate, move, store size
+	
+	Enemy controller
+
+	Enemies (health, points for killing, lives lost for exit, speed)
+		Slow
+		Fast
+		Boss
+	
+	Pathfinding algorithm (A*, easy to implement, just don't overuse it, look into asynchronous use?)
+
+	Images - subdirectory for all the images!

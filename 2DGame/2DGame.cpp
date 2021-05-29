@@ -1,35 +1,50 @@
-﻿// SDL2 Hello, World!
-// This should display a white screen for 2 seconds
-// compile with: clang++ main.cpp -o hello_sdl2 -lSDL2
-// run with: ./hello_sdl2
-#include <SDL.h>
+﻿/*
+*	2D Game
+*	Stefan Harrison
+* 
+*	Simple 2D game to learn/brush up on
+*	CMake C++ and general techniques
+*/
 #include <stdio.h>
+#include <memory>
+#include <chrono>
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#include <SDL.h>
 
-int main(int argc, char* argv[]) {
-	SDL_Window* window = NULL;
-	SDL_Surface* screenSurface = NULL;
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		fprintf(stderr, "could not initialize sdl2: %s\n", SDL_GetError());
-		return 1;
-	}
-	window = SDL_CreateWindow(
-		"hello_sdl2",
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		SCREEN_WIDTH, SCREEN_HEIGHT,
-		SDL_WINDOW_SHOWN
-	);
-	if (window == NULL) {
-		fprintf(stderr, "could not create window: %s\n", SDL_GetError());
-		return 1;
-	}
-	screenSurface = SDL_GetWindowSurface(window);
-	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-	SDL_UpdateWindowSurface(window);
-	SDL_Delay(2000);
-	SDL_DestroyWindow(window);
+#include "Game/Game.h"
+
+int main(int argc, char* argv[]) 
+{
+	auto game = std::make_unique<Game>();
+	int isExiting = 0;
+	float dt = 0;
+
+	SDL_Init(SDL_INIT_TIMER | SDL_INIT_EVENTS);
+
+	// Set up
+	game->StartGame();
+
+	// Run game loop
+	do
+	{
+		// Uint32 preFrameTime = SDL_GetTicks();
+		std::chrono::steady_clock::time_point chronoPreTime = std::chrono::high_resolution_clock::now();
+		// TODO: Frame rate
+		// Game Loop
+		isExiting = game->RunGame(dt);
+		if(!isExiting)
+		{
+			game->Render(dt);
+		}
+
+		// Timing
+		// Calculate dt, in seconds (6 sig fig)
+		// dt = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::milliseconds(SDL_GetTicks() - preFrameTime)).count();
+		dt = std::chrono::duration<float, std::chrono::seconds::period>(std::chrono::high_resolution_clock::now() - chronoPreTime).count();
+	} while (!isExiting);
+	
+	// Clean up and quit
+	game->StopGame();
 	SDL_Quit();
 	return 0;
 }
